@@ -231,6 +231,13 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
                     )
 
             transactionRepository.insert(transaction)
+            
+            // Decrease stock for sold items
+            val orderItems = orderRepository.getItemsByOrderList(order.id)
+            orderItems.forEach { item ->
+                productRepository.decreaseStock(item.productId, item.quantity)
+            }
+            
             orderRepository.updateStatus(order.id, OrderStatus.DONE)
             clearSelection()
         }

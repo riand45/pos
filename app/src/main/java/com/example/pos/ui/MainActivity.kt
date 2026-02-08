@@ -12,6 +12,7 @@ import com.example.pos.databinding.ActivityMainBinding
 import com.example.pos.ui.adapter.NavAdapter
 import io.github.jan.supabase.gotrue.auth
 import kotlinx.coroutines.*
+import androidx.lifecycle.lifecycleScope
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
         setupNavigation()
         setupSidebar()
-        setupUserProfile()
+        updateUserProfile()
     }
 
     private fun setupNavigation() {
@@ -120,9 +121,9 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun setupUserProfile() {
+    fun updateUserProfile() {
         val app = application as PosApplication
-        kotlinx.coroutines.GlobalScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+        lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
             val session = try {
                 app.supabase.auth.currentSessionOrNull()
             } catch (e: Exception) {
@@ -131,19 +132,20 @@ class MainActivity : AppCompatActivity() {
             if (session != null) {
                 val user = session.user
                 val email = user?.email ?: "No Email"
-                // Try to get display name from user metadata, fallback to email username or "User"
-                // Note: enable creating user metadata in Supabase to support "full_name"
-                // For now, let's see if metadata is available.
-                // Since `user` is from gotrue-kt, need to check its properties.
-                // Assuming standard Supabase user structure.
                 
-                // Using a safe approach:
+                // Try to get display name from user metadata, fallback to email username or "User"
                 val metadata = user?.userMetadata
-                val fullName = metadata?.get("full_name")?.toString()?.replace("\"", "") ?: "User"
+                val fullName = metadata?.get("full_name")?.toString()?.replace("\"", "") 
+                    ?: email.substringBefore("@").replaceFirstChar { it.uppercase() }
 
-                kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+                withContext(kotlinx.coroutines.Dispatchers.Main) {
                     binding.tvUserName.text = fullName
                     binding.tvUserRole.text = email
+                }
+            } else {
+                 withContext(kotlinx.coroutines.Dispatchers.Main) {
+                    binding.tvUserName.text = "Guest"
+                    binding.tvUserRole.text = "Not logged in"
                 }
             }
         }

@@ -88,7 +88,7 @@
                         android:id="@+id/tv_user_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Alex Rivera"
+                        tools:text="Alex Rivera"
                         android:textColor="@color/text_primary"
                         android:textSize="@dimen/text_size_md" />
 
@@ -96,7 +96,7 @@
                         android:id="@+id/tv_user_role"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Manager"
+                        tools:text="Manager"
                         android:textColor="@color/text_tertiary"
                         android:textSize="@dimen/text_size_xs" />
 

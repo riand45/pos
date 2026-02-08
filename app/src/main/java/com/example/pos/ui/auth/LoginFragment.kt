@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import io.github.jan.supabase.gotrue.auth
 import com.example.pos.PosApplication
 import com.example.pos.R
+import com.example.pos.ui.MainActivity
 import com.example.pos.databinding.FragmentLoginBinding
 import kotlinx.coroutines.launch
 
@@ -96,6 +97,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun navigateToMain() {
+        (requireActivity() as? MainActivity)?.updateUserProfile()
         findNavController().navigate(R.id.action_login_to_main)
     }
 

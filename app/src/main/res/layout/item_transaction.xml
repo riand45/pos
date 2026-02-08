@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingVertical="@dimen/spacing_md"
+    android:background="?attr/selectableItemBackground">
+
+    <!-- Order ID -->
+    <TextView
+        android:id="@+id/order_id"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:textColor="@color/accent_primary"
+        android:textSize="@dimen/text_size_sm"
+        tools:text="#ORD-20231024-042" />
+
+    <!-- Time -->
+    <TextView
+        android:id="@+id/transaction_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/text_size_sm"
+        tools:text="14:20:31" />
+
+    <!-- Customer -->
+    <TextView
+        android:id="@+id/customer_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="@color/text_primary"
+        android:textSize="@dimen/text_size_sm"
+        tools:text="Guest #81" />
+
+    <!-- Payment Method -->
+    <TextView
+        android:id="@+id/payment_method"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/text_size_sm"
+        tools:text="QRIS - ShopeePay" />
+
+    <!-- Status -->
+    <TextView
+        android:id="@+id/transaction_status"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.8"
+        android:textColor="@color/status_success"
+        android:textSize="@dimen/text_size_sm"
+        tools:text="Success" />
+
+    <!-- Total -->
+    <TextView
+        android:id="@+id/transaction_total"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:textColor="@color/text_primary"
+        android:textSize="@dimen/text_size_sm"
+        android:textStyle="bold"
+        tools:text="Rp 125.000" />
+
+</LinearLayout>

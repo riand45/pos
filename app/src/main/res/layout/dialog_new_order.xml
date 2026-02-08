@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background_secondary"
+    android:padding="@dimen/spacing_lg">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/new_order"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_size_xl"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/btn_close"
+            android:layout_width="@dimen/icon_size_md"
+            android:layout_height="@dimen/icon_size_md"
+            android:src="@drawable/ic_close"
+            android:contentDescription="Close" />
+
+    </LinearLayout>
+
+    <!-- Table Input -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="@dimen/spacing_lg"
+        android:background="@drawable/bg_input"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/spacing_md">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/table_number"
+            android:textColor="@color/text_tertiary"
+            android:textSize="@dimen/text_size_md" />
+
+        <EditText
+            android:id="@+id/input_table"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/spacing_sm"
+            android:background="@android:color/transparent"
+            android:hint="Optional"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_tertiary"
+            android:textSize="@dimen/text_size_md"
+            android:inputType="text" />
+
+    </LinearLayout>
+
+    <!-- Products Grid -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lg"
+        android:text="@string/select_products"
+        android:textColor="@color/text_tertiary"
+        android:textSize="@dimen/text_size_sm"
+        android:textStyle="bold" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/products_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/spacing_md"
+        android:clipToPadding="false"
+        tools:listitem="@layout/item_product_select" />
+
+    <!-- Footer -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_md"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/cart_count"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_size_md"
+            tools:text="3 items" />
+
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_button_primary"
+            android:paddingHorizontal="@dimen/spacing_lg"
+            android:text="@string/create_order"
+            android:textColor="@color/background_primary"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+
+</LinearLayout>

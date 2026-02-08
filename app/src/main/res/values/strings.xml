@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">POS System</string>
+    
+    <!-- Navigation -->
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_categories">Categories</string>
+    <string name="nav_products">Products</string>
+    <string name="nav_orders">Orders</string>
+    <string name="nav_history">History</string>
+    <string name="nav_settings">Settings</string>
+    
+    <!-- Order Status -->
+    <string name="status_queue">ANTRIAN</string>
+    <string name="status_process">PROSES</string>
+    <string name="status_done">SELESAI</string>
+    
+    <!-- Actions -->
+    <string name="action_add">Tambah</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_delete">Hapus</string>
+    <string name="action_save">Simpan</string>
+    <string name="action_cancel">Batal</string>
+    <string name="action_search">Cari</string>
+    <string name="action_filter">Filter</string>
+    
+    <!-- Category -->
+    <string name="category_name">Nama Kategori</string>
+    <string name="category_description">Deskripsi</string>
+    <string name="category_icon">Ikon</string>
+    <string name="add_category">Tambah Kategori</string>
+    <string name="edit_category">Edit Kategori</string>
+    
+    <!-- Product -->
+    <string name="product_name">Nama Produk</string>
+    <string name="product_price">Harga</string>
+    <string name="product_stock">Stok</string>
+    <string name="product_category">Kategori</string>
+    <string name="add_product">Tambah Produk</string>
+    <string name="edit_product">Edit Produk</string>
+    <string name="all_products">Semua Produk</string>
+    <string name="low_stock">Stok Rendah</string>
+    <string name="stock_units">%d units</string>
+    
+    <!-- Order -->
+    <string name="new_order">+ New Order</string>
+    <string name="order_number">Nomor Order</string>
+    <string name="order_items">Items</string>
+    <string name="total_items">%d Items</string>
+    <string name="finish">Finish</string>
+    <string name="cooking">COOKING</string>
+    <string name="preparing">PREPARING</string>
+    <string name="ready">READY</string>
+    
+    <!-- Payment -->
+    <string name="process_payment">Process Payment</string>
+    <string name="items_summary">ITEMS SUMMARY</string>
+    <string name="payment_method">PAYMENT METHOD</string>
+    <string name="cash">Cash</string>
+    <string name="transfer_qris">Transfer / QRIS</string>
+    <string name="quick_select">QUICK SELECT</string>
+    <string name="uang_pas">Uang Pas</string>
+    <string name="pay_amount">BAYAR (PAY AMOUNT)</string>
+    <string name="change">KEMBALIAN (CHANGE)</string>
+    <string name="bank_selection">BANK SELECTION (TRANSFERS ONLY)</string>
+    <string name="subtotal">Subtotal</string>
+    <string name="tax">Tax (10%%)</string>
+    <string name="total_bill">Total Bill</string>
+    <string name="complete_transaction">Complete Transaction</string>
+    <string name="discard">Discard</string>
+    <string name="print_receipt">Print Receipt Automatically</string>
+    
+    <!-- History -->
+    <string name="daily_transaction_history">Daily Transaction History</string>
+    <string name="transaction_list">Transaction List</string>
+    <string name="total_omzet">Total Omzet Hari Ini</string>
+    <string name="total_transactions">TOTAL TRANSACTIONS</string>
+    <string name="avg_basket_size">AVG. BASKET SIZE</string>
+    <string name="change_date">Change Date</string>
+    <string name="shift_report">Shift Report</string>
+    <string name="order_id">ORDER ID</string>
+    <string name="time">TIME</string>
+    <string name="customer">CUSTOMER</string>
+    <string name="payment_method_header">PAYMENT METHOD</string>
+    <string name="status">STATUS</string>
+    <string name="total_amount">TOTAL AMOUNT</string>
+    <string name="success">Success</string>
+    <string name="refunded">Refunded</string>
+    <string name="all">All</string>
+    <string name="refund">Refund</string>
+    
+    <!-- Banks -->
+    <string name="bca">Transfer Bank</string>
+    <string name="qris">QRIS</string>
+    <string name="qris_shopeepay">QRIS - ShopeePay</string>
+    <string name="qris_gopay">QRIS - GoPay</string>
+    
+    <!-- Misc -->
+    <string name="terminal_info">Main Terminal v2.4</string>
+    <string name="live_system">LIVE SYSTEM</string>
+    <string name="sorted_by">Sorted by:</string>
+    <string name="newest_first">Newest First</string>
+    <string name="oldest_first">Oldest First</string>
+    <string name="kanban_view">Kanban View</string>
+    <string name="list_view">List View</string>
+    <string name="search_orders">Search orders…</string>
+    <string name="search_products">Search products…</string>
+    <string name="guest">Guest #%d</string>
+    <string name="table">Table %s</string>
+    <string name="dine_in">Dine-In</string>
+    <string name="takeaway">Takeaway</string>
+    <string name="table_pickup">Table Pickup</string>
+    <string name="table_number">Table Number</string>
+    <string name="select_products">SELECT PRODUCTS</string>
+    <string name="create_order">CREATE ORDER</string>
+    
+    <!-- Settings -->
+    <string name="settings">Settings</string>
+    <string name="printer_configuration">Printer Configuration</string>
+    <string name="printer_settings_desc">Configure Bluetooth printer for receipt printing</string>
+    <string name="current_printer">Current Printer</string>
+    <string name="no_printer_selected">No printer selected</string>
+    <string name="scan_for_printers">Scan for Printers</string>
+    <string name="test_print">Test Print</string>
+    <string name="available_devices">Available Bluetooth Devices</string>
+    <string name="paired">Paired</string>
+    <string name="not_paired">Not Paired</string>
+    <string name="scanning">Scanning for devices…</string>
+    <string name="printer_connected">Printer connected successfully</string>
+    <string name="printer_disconnected">Printer disconnected</string>
+    <string name="connection_failed">Connection failed</string>
+    <string name="test_print_success">Test print sent successfully</string>
+    <string name="test_print_failed">Test print failed</string>
+    <string name="bluetooth_permission_required">Bluetooth permission is required to scan for printers</string>
+    <string name="enable_bluetooth">Please enable Bluetooth</string>
+    <string name="select_printer_first">Please select a printer first</string>
+</resources>

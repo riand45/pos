@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background_primary"
+    tools:context=".ui.history.HistoryFragment">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/spacing_lg"
+        android:paddingVertical="@dimen/spacing_md">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/daily_transaction_history"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_xxl"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:text="Manage and review your daily sales data for today."
+                android:textColor="@color/text_tertiary"
+                android:textSize="@dimen/text_size_md" />
+
+        </LinearLayout>
+
+        <!-- Date Picker Button -->
+        <Button
+            android:id="@+id/btn_date"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_button_secondary"
+            android:paddingHorizontal="@dimen/spacing_md"
+            android:textColor="@color/text_primary"
+            android:textAllCaps="false"
+            android:textSize="@dimen/text_size_sm"
+            tools:text="Oct 24, 2023" />
+
+        <Button
+            android:id="@+id/btn_change_date"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="@dimen/spacing_sm"
+            android:background="@drawable/bg_button_primary"
+            android:paddingHorizontal="@dimen/spacing_md"
+            android:text="@string/change_date"
+            android:textColor="@color/background_primary"
+            android:textAllCaps="false"
+            android:textSize="@dimen/text_size_sm" />
+
+    </LinearLayout>
+
+    <!-- Stats Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/spacing_lg"
+        android:paddingVertical="@dimen/spacing_md">
+
+        <!-- Stats Column -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="vertical">
+
+            <!-- Daily Card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_card"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_md">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Statistik Harian"
+                    android:textColor="@color/text_tertiary"
+                    android:textSize="@dimen/text_size_sm" />
+
+                <TextView
+                    android:id="@+id/total_revenue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/accent_primary"
+                    android:textSize="@dimen/text_size_display"
+                    android:textStyle="bold"
+                    tools:text="Rp 15.450.000" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_sm"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/total_orders"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_sm"
+                        tools:text="42 Orders" />
+
+                    <TextView
+                        android:id="@+id/avg_basket"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_sm"
+                        tools:text="Avg: Rp 367.850" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                android:orientation="horizontal">
+
+                <!-- Monthly Card -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_card"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_sm">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bulan Ini"
+                        android:textColor="@color/text_tertiary"
+                        android:textSize="@dimen/text_size_xs" />
+
+                    <TextView
+                        android:id="@+id/monthly_revenue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/accent_primary"
+                        android:textSize="@dimen/text_size_md"
+                        android:textStyle="bold"
+                        tools:text="Rp 250.000.000" />
+                </LinearLayout>
+
+                <!-- Yearly Card -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/spacing_sm"
+                    android:background="@drawable/bg_card"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_sm">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tahun Ini"
+                        android:textColor="@color/text_tertiary"
+                        android:textSize="@dimen/text_size_xs" />
+
+                    <TextView
+                        android:id="@+id/yearly_revenue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/accent_primary"
+                        android:textSize="@dimen/text_size_md"
+                        android:textStyle="bold"
+                        tools:text="Rp 2.500.000.000" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Export Card -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/spacing_md"
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_md">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quick Export"
+                android:textColor="@color/text_tertiary"
+                android:textSize="@dimen/text_size_sm" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/shift_report"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_lg"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_export_csv"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_button_secondary"
+                    android:text="CSV"
+                    android:textColor="@color/text_secondary"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:id="@+id/btn_export_pdf"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/spacing_sm"
+                    android:background="@drawable/bg_button_secondary"
+                    android:text="PDF"
+                    android:textColor="@color/text_secondary"
+                    android:textAllCaps="false" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Transaction List Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/spacing_lg"
+        android:paddingVertical="@dimen/spacing_md">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/transaction_list"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_size_lg"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Filter Chips -->
+        <HorizontalScrollView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/spacing_md"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/filter_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:background="@drawable/bg_filter_chip"
+                    android:paddingHorizontal="@dimen/spacing_md"
+                    android:text="@string/all"
+                    android:textColor="@color/background_primary"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/text_size_sm" />
+
+                <Button
+                    android:id="@+id/filter_success"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="@dimen/spacing_sm"
+                    android:background="@drawable/bg_filter_chip"
+                    android:paddingHorizontal="@dimen/spacing_md"
+                    android:text="@string/success"
+                    android:textColor="@color/text_secondary"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/text_size_sm" />
+
+                <Button
+                    android:id="@+id/filter_refund"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="@dimen/spacing_sm"
+                    android:background="@drawable/bg_filter_chip"
+                    android:paddingHorizontal="@dimen/spacing_md"
+                    android:text="@string/refund"
+                    android:textColor="@color/text_secondary"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/text_size_sm" />
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+    </LinearLayout>
+
+    <!-- Transaction List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/transactions_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="@dimen/spacing_lg"
+        android:clipToPadding="false"
+        tools:listitem="@layout/item_transaction" />
+
+</LinearLayout>

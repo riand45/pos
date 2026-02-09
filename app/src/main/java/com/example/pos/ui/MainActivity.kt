@@ -3,6 +3,7 @@ package com.example.pos.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,7 +13,6 @@ import com.example.pos.databinding.ActivityMainBinding
 import com.example.pos.ui.adapter.NavAdapter
 import io.github.jan.supabase.gotrue.auth
 import kotlinx.coroutines.*
-import androidx.lifecycle.lifecycleScope
 import androidx.appcompat.widget.PopupMenu
 
 class MainActivity : AppCompatActivity() {
@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         setupSidebar()
         updateUserProfile()
         setupUserMenu()
+        setupBackPress()
     }
 
     private fun setupNavigation() {
@@ -111,12 +112,19 @@ class MainActivity : AppCompatActivity() {
         navAdapter.setSelectedId(destinationId)
     }
 
-    override fun onBackPressed() {
-        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            binding.drawerLayout.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
-        }
+    private fun setupBackPress() {
+        
+        onBackPressedDispatcher.addCallback(this, object : androidx.activity.OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                } else {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                    isEnabled = true
+                }
+            }
+        })
     }
 
     private fun performLogout() {
@@ -126,7 +134,7 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton("Yes") { _, _ ->
                 val app = application as PosApplication
                 // Sign out in background
-                kotlinx.coroutines.GlobalScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
                     try {
                         app.supabase.auth.signOut()
                         kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {

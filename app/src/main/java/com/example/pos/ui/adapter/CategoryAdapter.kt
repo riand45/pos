@@ -30,7 +30,7 @@ class CategoryAdapter(
 
         fun bind(category: Category) {
             binding.categoryName.text = category.name
-            binding.categoryProductCount.text = "${category.productCount ?: 0} products"
+            binding.categoryProductCount.text = "${category.productCount} products"
 
             binding.btnEdit.setOnClickListener { onEditClick(category) }
             binding.btnDelete.setOnClickListener { onDeleteClick(category) }

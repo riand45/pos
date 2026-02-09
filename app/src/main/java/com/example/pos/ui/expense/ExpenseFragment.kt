@@ -157,7 +157,7 @@ class ExpenseFragment : Fragment() {
                 date to total
             }
 
-        val dataEntries = entries.mapIndexed { index, (date, total) ->
+        val dataEntries = entries.mapIndexed { index, (_, total) ->
             com.github.mikephil.charting.data.Entry(index.toFloat(), total.toFloat())
         }
 

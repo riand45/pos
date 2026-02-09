@@ -58,7 +58,7 @@ class OrderKanbanFragment : Fragment() {
     private fun setupKanbanColumns() {
         // Queue Column
         val queueBinding = binding.columnQueue
-        setupColumn(queueBinding, getString(R.string.status_queue), OrderStatus.QUEUE)
+        setupColumn(queueBinding, getString(R.string.status_queue))
         queueAdapter = OrderCardAdapter(
             onCardClick = { order -> onOrderClick(order) },
             onNextClick = { order -> viewModel.updateOrderStatus(order, OrderStatus.PROCESS) },
@@ -73,7 +73,7 @@ class OrderKanbanFragment : Fragment() {
 
         // Process Column
         val processBinding = binding.columnProcess
-        setupColumn(processBinding, getString(R.string.status_process), OrderStatus.PROCESS)
+        setupColumn(processBinding, getString(R.string.status_process))
         processBinding.root.setOnDragListener(dragListener) // Accept drops here
         
         processAdapter = OrderCardAdapter(
@@ -90,7 +90,7 @@ class OrderKanbanFragment : Fragment() {
 
         // Done Column
         val doneBinding = binding.columnDone
-        setupColumn(doneBinding, getString(R.string.status_done), OrderStatus.DONE)
+        setupColumn(doneBinding, getString(R.string.status_done))
         doneAdapter = OrderCardAdapter(
             onCardClick = { order -> onOrderClick(order) },
             onNextClick = { },
@@ -136,7 +136,7 @@ class OrderKanbanFragment : Fragment() {
         }
     }
 
-    private fun setupColumn(columnBinding: LayoutKanbanColumnBinding, title: String, status: OrderStatus) {
+    private fun setupColumn(columnBinding: LayoutKanbanColumnBinding, title: String) {
         columnBinding.columnTitle.text = title
         columnBinding.columnCount.text = "0"
     }
@@ -273,11 +273,7 @@ class OrderKanbanFragment : Fragment() {
         
         val shadow = View.DragShadowBuilder(view)
         
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            view.startDragAndDrop(dragData, shadow, order, 0)
-        } else {
-            view.startDrag(dragData, shadow, order, 0)
-        }
+        view.startDragAndDrop(dragData, shadow, order, 0)
         return true
     }
 

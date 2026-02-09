@@ -2,6 +2,10 @@ package com.example.pos.utils
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.pdf.PdfDocument
 import androidx.core.content.FileProvider
 import com.example.pos.data.entity.Transaction
 import java.io.File
@@ -25,29 +29,68 @@ object ExportUtils {
     }
 
     fun exportToPdf(context: Context, transactions: List<Transaction>) {
-        // Simple PDF generation using Canvas/PdfDocument if needed, 
-        // but for now we'll implement a simple text-based summary for the CSV format
-        // and a placeholder for PDF logic as requested.
-        val fileName = "History_${System.currentTimeMillis()}.txt" // Using TXT as simple PDF alternative if library is complex
-        val file = File(context.cacheDir, fileName)
+        val pdfDocument = PdfDocument()
+        val pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create() // A4 Size
+        val page = pdfDocument.startPage(pageInfo)
+        val canvas: Canvas = page.canvas
+        val paint = Paint()
+
+        // Title
+        paint.color = Color.BLACK
+        paint.textSize = 20f
+        paint.isFakeBoldText = true
+        canvas.drawText("POS TRANSACTION HISTORY REPORT", 50f, 50f, paint)
+
+        // Metadata
+        paint.textSize = 12f
+        paint.isFakeBoldText = false
+        canvas.drawText("Generated on: ${DateFormatter.formatLongDate(System.currentTimeMillis())}", 50f, 80f, paint)
+        canvas.drawText("Total Transactions: ${transactions.size}", 50f, 100f, paint)
+
+        // Table Header
+        paint.isFakeBoldText = true
+        var y = 140f
+        canvas.drawText("Date", 50f, y, paint)
+        canvas.drawText("Status", 150f, y, paint)
+        canvas.drawText("Amount", 450f, y, paint)
         
-        val writer = file.bufferedWriter()
-        writer.write("POS TRANSACTION HISTORY REPORT\n")
-        writer.write("Generated on: ${DateFormatter.formatLongDate(System.currentTimeMillis())}\n")
-        writer.write("--------------------------------\n\n")
-        
+        canvas.drawLine(50f, y + 5, 550f, y + 5, paint)
+        y += 30f
+
+        // Table Body
+        paint.isFakeBoldText = false
         var total = 0.0
         transactions.forEach {
-            val statusStr = if (it.isRefunded) "REFUNDED" else it.status
-            writer.write("${DateFormatter.formatShortDate(it.createdAt)} | ${it.status} | ${CurrencyFormatter.format(it.totalAmount)}\n")
+            canvas.drawText(DateFormatter.formatShortDate(it.createdAt), 50f, y, paint)
+            canvas.drawText(if (it.isRefunded) "Refunded" else it.status, 150f, y, paint)
+            canvas.drawText(CurrencyFormatter.format(it.totalAmount), 450f, y, paint)
+            
             if (!it.isRefunded) total += it.totalAmount
+            y += 20f
+            
+            // Basic page break logic could go here if y > 800
         }
+
+        // Total
+        y += 20f
+        paint.isFakeBoldText = true
+        canvas.drawLine(50f, y - 15, 550f, y - 15, paint)
+        canvas.drawText("TOTAL REVENUE:", 300f, y, paint)
+        canvas.drawText(CurrencyFormatter.format(total), 450f, y, paint)
+
+        pdfDocument.finishPage(page)
+
+        val fileName = "History_${System.currentTimeMillis()}.pdf"
+        val file = File(context.cacheDir, fileName)
         
-        writer.write("\n--------------------------------\n")
-        writer.write("TOTAL REVENUE: ${CurrencyFormatter.format(total)}\n")
-        writer.close()
+        try {
+            pdfDocument.writeTo(FileOutputStream(file))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        pdfDocument.close()
         
-        shareFile(context, file, "text/plain")
+        shareFile(context, file, "application/pdf")
     }
 
     private fun shareFile(context: Context, file: File, mimeType: String) {

@@ -27,6 +27,11 @@ class CustomerViewModel(application: android.app.Application) : AndroidViewModel
         repository.insert(customer)
     }
 
+    fun insertAndGet(customer: Customer, onComplete: (Customer) -> Unit) = viewModelScope.launch {
+        val insertedCustomer = repository.insertAndGet(customer)
+        onComplete(insertedCustomer)
+    }
+
     fun update(customer: Customer) = viewModelScope.launch {
         repository.update(customer)
     }

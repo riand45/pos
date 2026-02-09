@@ -8,8 +8,13 @@ class CustomerRepository(private val customerDao: CustomerDao) {
 
     val allCustomers: Flow<List<Customer>> = customerDao.getAllCustomers()
 
-    suspend fun insert(customer: Customer) {
-        customerDao.insert(customer)
+    suspend fun insert(customer: Customer): Long {
+        return customerDao.insert(customer)
+    }
+
+    suspend fun insertAndGet(customer: Customer): Customer {
+        val id = customerDao.insert(customer)
+        return customer.copy(id = id)
     }
 
     suspend fun update(customer: Customer) {

@@ -22,6 +22,10 @@
         android:title="@string/nav_history" />
 
     <item
+        android:id="@+id/nav_customers"
+        android:icon="@drawable/ic_people"
+        android:title="Customers" />
+    <item
         android:id="@+id/nav_sync"
         android:icon="@drawable/ic_dashboard"
         android:title="Backup &amp; Sync" />

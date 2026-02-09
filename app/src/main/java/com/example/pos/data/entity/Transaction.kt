@@ -39,6 +39,7 @@ data class Transaction(
         @SerialName("amount_paid") val amountPaid: Double,
         @SerialName("change_amount") val changeAmount: Double = 0.0,
         @SerialName("bank_name") val bankName: String? = null,
+        @ColumnInfo(name = "customer_id") @SerialName("customer_id") val customerId: Long? = null,
         @SerialName("customer_name") val customerName: String? = null,
         val status: String = "Success",
         @SerialName("is_refunded") val isRefunded: Boolean = false,

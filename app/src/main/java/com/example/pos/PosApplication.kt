@@ -21,6 +21,7 @@ class PosApplication : Application() {
     val orderRepository by lazy { OrderRepository(database.orderDao(), database.orderItemDao()) }
     val transactionRepository by lazy { TransactionRepository(database.transactionDao()) }
     val expenseRepository by lazy { ExpenseRepository(database.expenseDao()) }
+    val customerRepository by lazy { com.example.pos.data.repository.CustomerRepository(database.customerDao()) }
 
     val supabase by lazy {
         createSupabaseClient(

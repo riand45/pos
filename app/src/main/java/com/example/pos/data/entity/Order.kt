@@ -22,6 +22,7 @@ data class Order(
         val status: OrderStatus = OrderStatus.QUEUE,
         @SerialName("total_items") val totalItems: Int = 0,
         @SerialName("total_price") val totalPrice: Double = 0.0,
+        @ColumnInfo(name = "customer_id") @SerialName("customer_id") val customerId: Long? = null,
         @SerialName("customer_name") val customerName: String? = null,
         @SerialName("table_info") val tableInfo: String? = null,
         @SerialName("created_at") val createdAt: Long = System.currentTimeMillis(),

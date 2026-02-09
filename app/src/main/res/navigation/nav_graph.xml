@@ -60,6 +60,27 @@
         tools:layout="@layout/fragment_sync" />
 
     <fragment
+        android:id="@+id/nav_customers"
+        android:name="com.example.pos.ui.customer.CustomerListFragment"
+        android:label="Customers"
+        tools:layout="@layout/fragment_customer_list">
+        <action
+            android:id="@+id/action_customers_to_detail"
+            app:destination="@id/nav_customer_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_customer_detail"
+        android:name="com.example.pos.ui.customer.CustomerDetailFragment"
+        android:label="Customer Detail"
+        tools:layout="@layout/fragment_customer_detail">
+        <argument
+            android:name="customerId"
+            app:argType="long"
+            android:defaultValue="-1L" />
+    </fragment>
+
+    <fragment
         android:id="@+id/nav_settings"
         android:name="com.example.pos.ui.settings.SettingsFragment"
         android:label="@string/nav_settings"

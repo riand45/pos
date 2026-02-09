@@ -207,7 +207,8 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
             order: Order,
             paymentMethod: PaymentMethod,
             amountPaid: Double,
-            bankName: String? = null
+            bankName: String? = null,
+            customer: Customer? = null
     ) {
         viewModelScope.launch {
             val subtotal = order.totalPrice
@@ -226,7 +227,8 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
                             amountPaid = amountPaid,
                             changeAmount = change,
                             bankName = bankName,
-                            customerName = order.customerName,
+                            customerId = customer?.id ?: order.customerId,
+                            customerName = customer?.name ?: order.customerName,
                             userId = userId
                     )
 
@@ -238,7 +240,14 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
                 productRepository.decreaseStock(item.productId, item.quantity)
             }
             
-            orderRepository.updateStatus(order.id, OrderStatus.DONE)
+            // Update order status and customer info if provided
+            val updatedOrder = order.copy(
+                status = OrderStatus.DONE, 
+                customerId = customer?.id ?: order.customerId,
+                customerName = customer?.name ?: order.customerName
+            )
+            orderRepository.update(updatedOrder)
+            
             clearSelection()
         }
     }

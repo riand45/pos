@@ -20,8 +20,9 @@ import kotlinx.coroutines.launch
                         Order::class,
                         OrderItem::class,
                         Transaction::class,
-                        Expense::class],
-        version = 4,
+                        Expense::class,
+                        Customer::class],
+        version = 5,
         exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -32,6 +33,7 @@ abstract class AppDatabase : RoomDatabase() {
         abstract fun orderItemDao(): OrderItemDao
         abstract fun transactionDao(): TransactionDao
         abstract fun expenseDao(): ExpenseDao
+        abstract fun customerDao(): CustomerDao
 
         companion object {
                 @Volatile private var INSTANCE: AppDatabase? = null

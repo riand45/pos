@@ -32,6 +32,7 @@ class PaymentDialogFragment : DialogFragment() {
     private var selectedPaymentMethod = PaymentMethod.CASH
     private var selectedBank: String? = null
     private var totalAmount = 0.0
+    private var selectedCustomer: com.example.pos.data.entity.Customer? = null
 
     companion object {
         private const val ARG_ORDER_ID = "order_id"
@@ -74,6 +75,7 @@ class PaymentDialogFragment : DialogFragment() {
         setupBankSelection()
         setupQuickSelect()
         setupObservers()
+        setupCustomerSelection()
     }
 
     private fun setupUI() {
@@ -239,6 +241,11 @@ class PaymentDialogFragment : DialogFragment() {
                     binding.inputAmount.setSelection(amount.length)
                     updateQuickSelectSelection(binding.btnUangPas)
                 }
+                
+                if (!it.customerName.isNullOrEmpty()) {
+                    binding.btnSelectCustomer.text = it.customerName
+                    binding.btnSelectCustomer.setIconResource(R.drawable.ic_people)
+                }
             }
         }
 
@@ -337,13 +344,30 @@ class PaymentDialogFragment : DialogFragment() {
         finalizeTransaction(order, paidAmount)
     }
     
+    private fun setupCustomerSelection() {
+        binding.btnSelectCustomer.setOnClickListener {
+            val dialog = com.example.pos.ui.customer.CustomerSelectionDialogFragment { customer ->
+                selectedCustomer = customer
+                binding.btnSelectCustomer.text = customer.name
+                binding.btnSelectCustomer.setIconResource(R.drawable.ic_people)
+            }
+            dialog.show(parentFragmentManager, "CustomerSelection")
+        }
+    }
+
     private fun finalizeTransaction(order: com.example.pos.data.entity.Order, paidAmount: Double) {
         val bankName =
                 if (selectedPaymentMethod == PaymentMethod.TRANSFER) {
                     selectedBank
                 } else null
 
-        viewModel.completeTransaction(order, selectedPaymentMethod, paidAmount, bankName)
+        viewModel.completeTransaction(
+            order = order, 
+            paymentMethod = selectedPaymentMethod, 
+            amountPaid = paidAmount, 
+            bankName = bankName,
+            customer = selectedCustomer
+        )
         dismiss()
     }
 

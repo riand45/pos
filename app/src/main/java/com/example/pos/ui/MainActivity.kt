@@ -13,6 +13,7 @@ import com.example.pos.ui.adapter.NavAdapter
 import io.github.jan.supabase.gotrue.auth
 import kotlinx.coroutines.*
 import androidx.lifecycle.lifecycleScope
+import androidx.appcompat.widget.PopupMenu
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,8 +31,7 @@ class MainActivity : AppCompatActivity() {
                     NavItem(R.id.nav_customers, "Customers", R.drawable.ic_people),
                     NavItem(R.id.nav_expense, "Expenses", R.drawable.ic_money),
                     NavItem(R.id.nav_sync, "Backup & Sync", R.drawable.ic_backup),
-                    NavItem(R.id.nav_settings, "Settings", R.drawable.ic_settings),
-                    NavItem(-1, "Logout", R.drawable.ic_logout)
+                    NavItem(R.id.nav_settings, "Settings", R.drawable.ic_settings)
             )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         setupNavigation()
         setupSidebar()
         updateUserProfile()
+        setupUserMenu()
     }
 
     private fun setupNavigation() {
@@ -86,6 +87,23 @@ class MainActivity : AppCompatActivity() {
         // Update selection when destination changes
         navController.addOnDestinationChangedListener { _, destination, _ ->
             updateSelectedNav(destination.id)
+        }
+    }
+
+    private fun setupUserMenu() {
+        binding.layoutUserProfile.setOnClickListener { view ->
+            val popup = PopupMenu(this, view)
+            popup.menuInflater.inflate(R.menu.menu_user_profile, popup.menu)
+            popup.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.action_logout -> {
+                        performLogout()
+                        true
+                    }
+                    else -> false
+                }
+            }
+            popup.show()
         }
     }
 

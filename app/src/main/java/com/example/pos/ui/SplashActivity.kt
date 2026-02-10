@@ -21,6 +21,7 @@ class SplashActivity : AppCompatActivity() {
 
             val app = application as PosApplication
             val session = try {
+                app.supabase.auth.awaitInitialization()
                 app.supabase.auth.currentSessionOrNull()
             } catch (e: Exception) {
                 null

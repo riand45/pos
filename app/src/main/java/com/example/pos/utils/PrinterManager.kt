@@ -10,6 +10,9 @@ import java.io.IOException
 import java.io.OutputStream
 import java.util.*
 
+import android.annotation.SuppressLint
+
+@SuppressLint("MissingPermission")
 class PrinterManager(private val context: Context) {
     
     private var bluetoothSocket: BluetoothSocket? = null

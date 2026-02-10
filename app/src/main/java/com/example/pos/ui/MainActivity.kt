@@ -14,6 +14,7 @@ import com.example.pos.ui.adapter.NavAdapter
 import io.github.jan.supabase.gotrue.auth
 import kotlinx.coroutines.*
 import androidx.appcompat.widget.PopupMenu
+import android.view.View
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,18 +40,22 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupNavigation()
+        // 1. Initialize NavController
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
+
+        // 2. Initialize UI components (Sidebar/Adapter)
         setupSidebar()
+        
+        // 3. Setup Navigation graph and logic
+        setupNavigationLogic()
+        
         updateUserProfile()
         setupUserMenu()
         setupBackPress()
     }
 
-    private fun setupNavigation() {
-        val navHostFragment =
-                supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        navController = navHostFragment.navController
-
+    private fun setupNavigationLogic() {
         val isLoggedIn = intent.getBooleanExtra("LOGGED_IN", false)
         val graph = navController.navInflater.inflate(R.navigation.nav_graph)
         
@@ -61,9 +66,11 @@ class MainActivity : AppCompatActivity() {
         }
         navController.graph = graph
 
-        // Clear the extra so it doesn't persist on rotation if not handled by savedInstanceState, 
-        // though typically MainActivity handles rotation differently. 
-        // Better yet, just rely on it for initial launch.
+        // Add listener AFTER everything is initialized to avoid UninitializedPropertyAccessException
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            updateSelectedNav(destination.id)
+            binding.sidebar.visibility = if (destination.id == R.id.nav_login) View.GONE else View.VISIBLE
+        }
     }
 
     private fun setupSidebar() {
@@ -84,11 +91,6 @@ class MainActivity : AppCompatActivity() {
 
         // Set initial selection
         updateSelectedNav(R.id.nav_orders)
-
-        // Update selection when destination changes
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            updateSelectedNav(destination.id)
-        }
     }
 
     private fun setupUserMenu() {
@@ -134,10 +136,11 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton("Yes") { _, _ ->
                 val app = application as PosApplication
                 // Sign out in background
-                lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                lifecycleScope.launch(Dispatchers.IO) {
                     try {
                         app.supabase.auth.signOut()
-                        kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+                        withContext(Dispatchers.Main) {
+                            updateUserProfile()
                             navController.navigate(R.id.nav_login)
                             binding.drawerLayout.closeDrawer(GravityCompat.START)
                         }
@@ -150,8 +153,9 @@ class MainActivity : AppCompatActivity() {
 
     fun updateUserProfile() {
         val app = application as PosApplication
-        lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+        lifecycleScope.launch(Dispatchers.IO) {
             val session = try {
+                app.supabase.auth.awaitInitialization()
                 app.supabase.auth.currentSessionOrNull()
             } catch (e: Exception) {
                 null
@@ -165,12 +169,12 @@ class MainActivity : AppCompatActivity() {
                 val fullName = metadata?.get("full_name")?.toString()?.replace("\"", "") 
                     ?: email.substringBefore("@").replaceFirstChar { it.uppercase() }
 
-                withContext(kotlinx.coroutines.Dispatchers.Main) {
+                withContext(Dispatchers.Main) {
                     binding.tvUserName.text = fullName
                     binding.tvUserRole.text = email
                 }
             } else {
-                 withContext(kotlinx.coroutines.Dispatchers.Main) {
+                 withContext(Dispatchers.Main) {
                     binding.tvUserName.text = "Guest"
                     binding.tvUserRole.text = "Not logged in"
                 }

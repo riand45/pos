@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import com.example.pos.data.dao.TransactionDao
 import com.example.pos.data.entity.Transaction
 
-class TransactionRepository(private val transactionDao: TransactionDao) {
+class TransactionRepository(val transactionDao: TransactionDao) {
     fun getAllTransactions(userId: String): LiveData<List<Transaction>> =
             transactionDao.getAllTransactions(userId)
     fun getTodayTransactions(userId: String): LiveData<List<Transaction>> =

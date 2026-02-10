@@ -13,6 +13,7 @@ class SyncRepository(
         private val orderItemDao: OrderItemDao,
         private val expenseDao: ExpenseDao,
         private val customerDao: CustomerDao,
+        private val transactionDao: TransactionDao,
         private val supabase: SupabaseClient
 ) {
 
@@ -45,6 +46,11 @@ class SyncRepository(
         val expenses = expenseDao.getAllExpensesList(userId)
         if (expenses.isNotEmpty()) {
             supabase.postgrest.from("expenses").upsert(expenses) { select(Columns.ALL) }
+        }
+
+        val transactions = transactionDao.getAllTransactionsList(userId)
+        if (transactions.isNotEmpty()) {
+            supabase.postgrest.from("transactions").upsert(transactions) { select(Columns.ALL) }
         }
     }
 
@@ -79,6 +85,11 @@ class SyncRepository(
                         .from("customers")
                         .select(Columns.ALL) { filter { eq("user_id", userId) } }
                         .decodeList<Customer>()
+        val transactions =
+                supabase.postgrest
+                        .from("transactions")
+                        .select(Columns.ALL) { filter { eq("user_id", userId) } }
+                        .decodeList<Transaction>()
 
         // Overwrite local data
         categories.forEach { categoryDao.insert(it) }
@@ -87,5 +98,6 @@ class SyncRepository(
         orderItems.forEach { orderItemDao.insert(it) }
         expenses.forEach { expenseDao.insert(it) }
         customers.forEach { customerDao.insert(it) }
+        transactions.forEach { transactionDao.insert(it) }
     }
 }

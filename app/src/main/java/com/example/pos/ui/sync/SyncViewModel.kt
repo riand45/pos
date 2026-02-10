@@ -17,6 +17,7 @@ class SyncViewModel(application: Application) : AndroidViewModel(application) {
                 app.orderRepository.orderItemDao,
                 app.expenseRepository.expenseDao,
                 app.database.customerDao(),
+                app.transactionRepository.transactionDao,
                 app.supabase
         )
     }

@@ -9,6 +9,9 @@ interface TransactionDao {
         @Query("SELECT * FROM transactions WHERE user_id = :userId ORDER BY createdAt DESC")
         fun getAllTransactions(userId: String): LiveData<List<Transaction>>
 
+        @Query("SELECT * FROM transactions WHERE user_id = :userId ORDER BY createdAt DESC")
+        suspend fun getAllTransactionsList(userId: String): List<Transaction>
+
         @Query(
                 "SELECT * FROM transactions WHERE user_id = :userId AND createdAt BETWEEN :startDate AND :endDate ORDER BY createdAt DESC"
         )

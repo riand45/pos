@@ -29,17 +29,12 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
 
     // Get revenue for last 7 days for the chart
     fun getWeeklyRevenue(): LiveData<Map<String, Double>> {
-        val result = MutableLiveData<Map<String, Double>>()
         val calendar = Calendar.getInstance()
         val end = DateFormatter.getEndOfDay(calendar.timeInMillis)
-
         calendar.add(Calendar.DAY_OF_YEAR, -6)
         val start = DateFormatter.getStartOfDay(calendar.timeInMillis)
 
-        // This is a simplified implementation. In a real app,
-        // you'd use a custom DAO query for aggregation.
-        transactionRepository.getTransactionsByDateRange(userId, start, end).observeForever {
-                transactions ->
+        return transactionRepository.getTransactionsByDateRange(userId, start, end).map { transactions ->
             val dailyMap = mutableMapOf<String, Double>()
 
             // Initialize last 7 days with 0
@@ -58,8 +53,7 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
                     dailyMap[dayKey] = dailyMap[dayKey]!! + tx.totalAmount
                 }
             }
-            result.postValue(dailyMap)
+            dailyMap
         }
-        return result
     }
 }

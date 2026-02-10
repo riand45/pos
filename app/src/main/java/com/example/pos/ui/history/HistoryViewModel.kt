@@ -29,33 +29,25 @@ class HistoryViewModel(application: Application) : AndroidViewModel(application)
     private val _filterStatus = MutableLiveData<String>("All")
     val filterStatus: LiveData<String> = _filterStatus
 
-    val transactions: LiveData<List<Transaction>> =
-            MediatorLiveData<List<Transaction>>().apply {
-                fun update() {
-                    val start =
-                            _startDate.value
-                                    ?: DateFormatter.getStartOfDay(System.currentTimeMillis())
-                    val end =
-                            _endDate.value ?: DateFormatter.getEndOfDay(System.currentTimeMillis())
-                    val status = _filterStatus.value ?: "All"
+    private val filterTrigger = MediatorLiveData<Unit>().apply {
+        addSource(_startDate) { value = Unit }
+        addSource(_endDate) { value = Unit }
+        addSource(_filterStatus) { value = Unit }
+    }
 
-                    val source =
-                            transactionRepository.getTransactionsByDateRange(userId, start, end)
-                    addSource(source) { list ->
-                        value =
-                                when (status) {
-                                    "Success" ->
-                                            list.filter { it.status == "Success" && !it.isRefunded }
-                                    "Refund" -> list.filter { it.isRefunded }
-                                    else -> list
-                                }
-                    }
-                }
+    val transactions: LiveData<List<Transaction>> = filterTrigger.switchMap {
+        val start = _startDate.value ?: DateFormatter.getStartOfDay(System.currentTimeMillis())
+        val end = _endDate.value ?: DateFormatter.getEndOfDay(System.currentTimeMillis())
+        val status = _filterStatus.value ?: "All"
 
-                addSource(_startDate) { update() }
-                addSource(_endDate) { update() }
-                addSource(_filterStatus) { update() }
+        transactionRepository.getTransactionsByDateRange(userId, start, end).map { list ->
+            when (status) {
+                "Success" -> list.filter { it.status == "Success" && !it.isRefunded }
+                "Refund" -> list.filter { it.isRefunded }
+                else -> list
             }
+        }
+    }
 
     val monthlyReport: LiveData<ReportStats> =
             _startDate.switchMap { _ ->

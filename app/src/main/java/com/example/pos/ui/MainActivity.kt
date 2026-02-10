@@ -172,11 +172,13 @@ class MainActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     binding.tvUserName.text = fullName
                     binding.tvUserRole.text = email
+                    app.onUserChanged()
                 }
             } else {
                  withContext(Dispatchers.Main) {
                     binding.tvUserName.text = "Guest"
                     binding.tvUserRole.text = "Not logged in"
+                    app.onUserChanged()
                 }
             }
         }

@@ -13,7 +13,23 @@ import io.github.jan.supabase.gotrue.Auth
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.Postgrest
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import io.github.jan.supabase.gotrue.SessionStatus
+
 class PosApplication : Application() {
+    private val _currentUserId = MutableLiveData<String>("")
+    val currentUserId: LiveData<String> = _currentUserId
+
+    override fun onCreate() {
+        super.onCreate()
+        // Initialize user ID from current session
+        _currentUserId.value = supabase.auth.currentUserOrNull()?.id ?: ""
+    }
+
+    fun onUserChanged() {
+        _currentUserId.value = supabase.auth.currentUserOrNull()?.id ?: ""
+    }
     val database by lazy { AppDatabase.getDatabase(this) }
 
     val categoryRepository by lazy { CategoryRepository(database.categoryDao()) }

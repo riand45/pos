@@ -33,14 +33,16 @@ class HistoryViewModel(application: Application) : AndroidViewModel(application)
         addSource(_startDate) { value = Unit }
         addSource(_endDate) { value = Unit }
         addSource(_filterStatus) { value = Unit }
+        addSource(posApp.currentUserId) { value = Unit }
     }
 
     val transactions: LiveData<List<Transaction>> = filterTrigger.switchMap {
         val start = _startDate.value ?: DateFormatter.getStartOfDay(System.currentTimeMillis())
         val end = _endDate.value ?: DateFormatter.getEndOfDay(System.currentTimeMillis())
         val status = _filterStatus.value ?: "All"
+        val uid = posApp.currentUserId.value ?: userId
 
-        transactionRepository.getTransactionsByDateRange(userId, start, end).map { list ->
+        transactionRepository.getTransactionsByDateRange(uid, start, end).map { list ->
             when (status) {
                 "Success" -> list.filter { it.status == "Success" && !it.isRefunded }
                 "Refund" -> list.filter { it.isRefunded }

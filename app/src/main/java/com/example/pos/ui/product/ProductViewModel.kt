@@ -3,6 +3,7 @@ package com.example.pos.ui.product
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.example.pos.PosApplication
 import com.example.pos.data.entity.Product
@@ -16,10 +17,17 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
     private val userId: String
         get() = posApp.supabase.auth.currentUserOrNull()?.id ?: ""
 
-    fun getAllProducts(): LiveData<List<Product>> = productRepository.getAllProducts(userId)
+    fun getAllProducts(): LiveData<List<Product>> =
+            posApp.currentUserId.switchMap { uid ->
+                val activeUid = if (uid.isNotEmpty()) uid else userId
+                productRepository.getAllProducts(activeUid)
+            }
 
     fun getProductsByCategory(categoryId: Long): LiveData<List<Product>> =
-            productRepository.getProductsByCategory(categoryId, userId)
+            posApp.currentUserId.switchMap { uid ->
+                val activeUid = if (uid.isNotEmpty()) uid else userId
+                productRepository.getProductsByCategory(categoryId, activeUid)
+            }
 
     fun insert(
             categoryId: Long,

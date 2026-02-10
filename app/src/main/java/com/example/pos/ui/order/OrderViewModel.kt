@@ -30,58 +30,38 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
 
     enum class ViewMode { KANBAN, LIST }
 
-    private val _filterTrigger = MediatorLiveData<Pair<String, Boolean>>().apply {
-        addSource(_searchQuery) { query -> value = query to (_isNewestFirst.value ?: true) }
-        addSource(_isNewestFirst) { isNewest -> value = (_searchQuery.value ?: "") to isNewest }
-        value = "" to true
+    private val _filterTrigger = MediatorLiveData<Unit>().apply {
+        addSource(_searchQuery) { value = Unit }
+        addSource(_isNewestFirst) { value = Unit }
+        addSource(posApp.currentUserId) { value = Unit }
     }
 
-    private var queueSource: LiveData<List<OrderWithItems>>? = null
-    val queueOrders = MediatorLiveData<List<OrderWithItems>>().apply {
-        addSource(_filterTrigger) { filter ->
-            val query = filter.first
-            val isNewest = filter.second
-            val newSource = orderRepository.getOrderWithItemsByStatus(OrderStatus.QUEUE, userId, query, isNewest)
-            queueSource?.let { removeSource(it) }
-            queueSource = newSource
-            addSource(newSource) { value = it }
-        }
+    val queueOrders = _filterTrigger.switchMap {
+        val query = _searchQuery.value ?: ""
+        val isNewest = _isNewestFirst.value ?: true
+        val uid = posApp.currentUserId.value ?: userId
+        orderRepository.getOrderWithItemsByStatus(OrderStatus.QUEUE, uid, query, isNewest)
     }
 
-    private var processSource: LiveData<List<OrderWithItems>>? = null
-    val processOrders = MediatorLiveData<List<OrderWithItems>>().apply {
-        addSource(_filterTrigger) { filter ->
-            val query = filter.first
-            val isNewest = filter.second
-            val newSource = orderRepository.getOrderWithItemsByStatus(OrderStatus.PROCESS, userId, query, isNewest)
-            processSource?.let { removeSource(it) }
-            processSource = newSource
-            addSource(newSource) { value = it }
-        }
+    val processOrders = _filterTrigger.switchMap {
+        val query = _searchQuery.value ?: ""
+        val isNewest = _isNewestFirst.value ?: true
+        val uid = posApp.currentUserId.value ?: userId
+        orderRepository.getOrderWithItemsByStatus(OrderStatus.PROCESS, uid, query, isNewest)
     }
 
-    private var doneSource: LiveData<List<OrderWithItems>>? = null
-    val doneOrders = MediatorLiveData<List<OrderWithItems>>().apply {
-        addSource(_filterTrigger) { filter ->
-            val query = filter.first
-            val isNewest = filter.second
-            val newSource = orderRepository.getTodayOrderWithItemsByStatus(OrderStatus.DONE, userId, query, isNewest)
-            doneSource?.let { removeSource(it) }
-            doneSource = newSource
-            addSource(newSource) { value = it }
-        }
+    val doneOrders = _filterTrigger.switchMap {
+        val query = _searchQuery.value ?: ""
+        val isNewest = _isNewestFirst.value ?: true
+        val uid = posApp.currentUserId.value ?: userId
+        orderRepository.getTodayOrderWithItemsByStatus(OrderStatus.DONE, uid, query, isNewest)
     }
 
-    private var allOrdersSource: LiveData<List<OrderWithItems>>? = null
-    val allOrders = MediatorLiveData<List<OrderWithItems>>().apply {
-        addSource(_filterTrigger) { filter ->
-            val query = filter.first
-            val isNewest = filter.second
-            val newSource = orderRepository.getAllOrdersWithItems(userId, query, isNewest)
-            allOrdersSource?.let { removeSource(it) }
-            allOrdersSource = newSource
-            addSource(newSource) { value = it }
-        }
+    val allOrders = _filterTrigger.switchMap {
+        val query = _searchQuery.value ?: ""
+        val isNewest = _isNewestFirst.value ?: true
+        val uid = posApp.currentUserId.value ?: userId
+        orderRepository.getAllOrdersWithItems(uid, query, isNewest)
     }
 
     fun setSearchQuery(query: String) {

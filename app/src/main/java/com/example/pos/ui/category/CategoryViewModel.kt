@@ -3,6 +3,7 @@ package com.example.pos.ui.category
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.example.pos.PosApplication
 import com.example.pos.data.entity.Category
@@ -16,7 +17,11 @@ class CategoryViewModel(application: Application) : AndroidViewModel(application
     private val userId: String
         get() = posApp.supabase.auth.currentUserOrNull()?.id ?: ""
 
-    fun getAllCategories(): LiveData<List<Category>> = categoryRepository.getAllCategories(userId)
+    fun getAllCategories(): LiveData<List<Category>> =
+            posApp.currentUserId.switchMap { uid ->
+                val activeUid = if (uid.isNotEmpty()) uid else userId
+                categoryRepository.getAllCategories(activeUid)
+            }
 
     fun insert(name: String, description: String? = null) {
         viewModelScope.launch {

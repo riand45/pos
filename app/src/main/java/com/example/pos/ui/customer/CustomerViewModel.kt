@@ -9,18 +9,33 @@ import kotlinx.coroutines.launch
 
 class CustomerViewModel(application: android.app.Application) : AndroidViewModel(application) {
 
+    private val posApp = application as PosApplication
     private val repository: CustomerRepository
     val allCustomers: LiveData<List<Customer>>
 
     init {
-        val database = (application as PosApplication).database
+        val database = posApp.database
         val customerDao = database.customerDao()
         repository = CustomerRepository(customerDao)
-        allCustomers = repository.allCustomers.asLiveData()
+        allCustomers = posApp.currentUserId.switchMap { uid ->
+            val activeUid = if (uid.isNotEmpty()) uid else getCurrentUserId()
+            repository.getAllCustomers(activeUid).asLiveData()
+        }
     }
 
     fun searchCustomers(query: String): LiveData<List<Customer>> {
-        return repository.searchCustomers(query).asLiveData()
+        return posApp.currentUserId.switchMap { uid ->
+            val activeUid = if (uid.isNotEmpty()) uid else getCurrentUserId()
+            repository.searchCustomers(activeUid, query).asLiveData()
+        }
+    }
+
+    fun getCustomerById(id: Long): LiveData<Customer?> {
+        val liveData = MutableLiveData<Customer?>()
+        viewModelScope.launch {
+            liveData.postValue(repository.getCustomerById(id))
+        }
+        return liveData
     }
 
     fun insert(customer: Customer) = viewModelScope.launch {

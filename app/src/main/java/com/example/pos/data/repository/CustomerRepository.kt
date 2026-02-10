@@ -6,7 +6,9 @@ import kotlinx.coroutines.flow.Flow
 
 class CustomerRepository(private val customerDao: CustomerDao) {
 
-    val allCustomers: Flow<List<Customer>> = customerDao.getAllCustomers()
+    fun getAllCustomers(userId: String): Flow<List<Customer>> {
+        return customerDao.getAllCustomers(userId)
+    }
 
     suspend fun insert(customer: Customer): Long {
         return customerDao.insert(customer)
@@ -29,7 +31,7 @@ class CustomerRepository(private val customerDao: CustomerDao) {
         return customerDao.getCustomerById(id)
     }
 
-    fun searchCustomers(query: String): Flow<List<Customer>> {
-        return customerDao.searchCustomers(query)
+    fun searchCustomers(userId: String, query: String): Flow<List<Customer>> {
+        return customerDao.searchCustomers(userId, query)
     }
 }

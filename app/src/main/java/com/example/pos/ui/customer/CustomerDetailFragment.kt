@@ -67,12 +67,9 @@ class CustomerDetailFragment : Fragment() {
         
         if (customerId != -1L) {
              binding.btnDelete.visibility = View.VISIBLE
-             // For now, let's just load it. 
-             // Since I need to fix ViewModel first to support getById properly for UI observing.
-             // Or I can just iterate allCustomers if the list is small (not ideal).
-             viewModel.allCustomers.observe(viewLifecycleOwner) { customers ->
-                 currentCustomer = customers.find { it.id == customerId }
-                 currentCustomer?.let { populateUI(it) }
+             viewModel.getCustomerById(customerId).observe(viewLifecycleOwner) { customer ->
+                 currentCustomer = customer
+                 customer?.let { populateUI(it) }
              }
         } else {
             binding.btnDelete.visibility = View.GONE

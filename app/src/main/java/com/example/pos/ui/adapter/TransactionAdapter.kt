@@ -36,7 +36,11 @@ class TransactionAdapter(
             val context = binding.root.context
 
             binding.orderId.text = transaction.orderNumber
-            binding.transactionTime.text = DateFormatter.formatTime(transaction.createdAt)
+            
+            val timeStr = DateFormatter.formatTime(transaction.createdAt)
+            val dateStr = if (DateFormatter.isToday(transaction.createdAt)) "" else DateFormatter.formatDateShort(transaction.createdAt) + " "
+            binding.transactionTime.text = "$dateStr$timeStr"
+            
             binding.customerName.text = transaction.customerName ?: "Guest"
 
             val paymentLabel = when (transaction.paymentMethod) {

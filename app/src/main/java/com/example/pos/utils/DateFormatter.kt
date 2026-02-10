@@ -8,7 +8,7 @@ object DateFormatter {
     private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale("id", "ID"))
     private val fullFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale("id", "ID"))
     private val relativeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-    private val shortDateFormat = SimpleDateFormat("dd/MM", Locale.getDefault())
+    private val shortDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()) // Added year
 
     fun formatTime(timestamp: Long): String = timeFormat.format(Date(timestamp))
 
@@ -41,22 +41,41 @@ object DateFormatter {
 
     fun formatLongDate(timestamp: Long): String = dateFormat.format(Date(timestamp))
 
-    fun getStartOfDay(timestamp: Long): Long {
+    /**
+     * Converts a timestamp (could be UTC from DatePicker) to start of day in Local Time.
+     * If sourceIsUtc is true (from MaterialDatePicker), we treat it as YYYY-MM-DD UTC
+     * and convert to YYYY-MM-DD 00:00:00 LOCAL.
+     */
+    fun getStartOfDay(timestamp: Long, sourceIsUtc: Boolean = false): Long {
+        val calendar = if (sourceIsUtc) {
+            Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply { timeInMillis = timestamp }
+        } else {
+            Calendar.getInstance().apply { timeInMillis = timestamp }
+        }
+        
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        
         return Calendar.getInstance().apply {
-            timeInMillis = timestamp
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
+            set(year, month, day, 0, 0, 0)
             set(Calendar.MILLISECOND, 0)
         }.timeInMillis
     }
 
-    fun getEndOfDay(timestamp: Long): Long {
+    fun getEndOfDay(timestamp: Long, sourceIsUtc: Boolean = false): Long {
+        val calendar = if (sourceIsUtc) {
+            Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply { timeInMillis = timestamp }
+        } else {
+            Calendar.getInstance().apply { timeInMillis = timestamp }
+        }
+        
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        
         return Calendar.getInstance().apply {
-            timeInMillis = timestamp
-            set(Calendar.HOUR_OF_DAY, 23)
-            set(Calendar.MINUTE, 59)
-            set(Calendar.SECOND, 59)
+            set(year, month, day, 23, 59, 59)
             set(Calendar.MILLISECOND, 999)
         }.timeInMillis
     }

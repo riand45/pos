@@ -19,7 +19,7 @@ class HistoryViewModel(application: Application) : AndroidViewModel(application)
         get() = posApp.supabase.auth.currentUserOrNull()?.id ?: ""
 
     private val _startDate =
-            MutableLiveData<Long>(DateFormatter.getStartOfDay(System.currentTimeMillis()))
+            MutableLiveData<Long>(DateFormatter.getStartOfDay(System.currentTimeMillis() - 30L * 24 * 60 * 60 * 1000))
     val startDate: LiveData<Long> = _startDate
 
     private val _endDate =
@@ -37,7 +37,7 @@ class HistoryViewModel(application: Application) : AndroidViewModel(application)
     }
 
     val transactions: LiveData<List<Transaction>> = filterTrigger.switchMap {
-        val start = _startDate.value ?: DateFormatter.getStartOfDay(System.currentTimeMillis())
+        val start = _startDate.value ?: DateFormatter.getStartOfDay(System.currentTimeMillis() - 30L * 24 * 60 * 60 * 1000)
         val end = _endDate.value ?: DateFormatter.getEndOfDay(System.currentTimeMillis())
         val status = _filterStatus.value ?: "All"
         val uid = posApp.currentUserId.value ?: userId
@@ -52,7 +52,8 @@ class HistoryViewModel(application: Application) : AndroidViewModel(application)
     }
 
     val monthlyReport: LiveData<ReportStats> =
-            _startDate.switchMap { _ ->
+            filterTrigger.switchMap { 
+                val uid = posApp.currentUserId.value ?: userId
                 val calendar = Calendar.getInstance()
                 calendar.set(Calendar.DAY_OF_MONTH, 1)
                 val start = DateFormatter.getStartOfDay(calendar.timeInMillis)
@@ -62,20 +63,21 @@ class HistoryViewModel(application: Application) : AndroidViewModel(application)
                 )
                 val end = DateFormatter.getEndOfDay(calendar.timeInMillis)
 
-                transactionRepository.getTransactionsByDateRange(userId, start, end).map { list ->
+                transactionRepository.getTransactionsByDateRange(uid, start, end).map { list ->
                     calculateStats(list)
                 }
             }
 
     val yearlyReport: LiveData<ReportStats> =
-            _startDate.switchMap { _ ->
+            filterTrigger.switchMap {
+                val uid = posApp.currentUserId.value ?: userId
                 val calendar = Calendar.getInstance()
                 calendar.set(Calendar.DAY_OF_YEAR, 1)
                 val start = DateFormatter.getStartOfDay(calendar.timeInMillis)
                 calendar.set(Calendar.DAY_OF_YEAR, calendar.getActualMaximum(Calendar.DAY_OF_YEAR))
                 val end = DateFormatter.getEndOfDay(calendar.timeInMillis)
 
-                transactionRepository.getTransactionsByDateRange(userId, start, end).map { list ->
+                transactionRepository.getTransactionsByDateRange(uid, start, end).map { list ->
                     calculateStats(list)
                 }
             }
@@ -91,8 +93,9 @@ class HistoryViewModel(application: Application) : AndroidViewModel(application)
     data class ReportStats(val revenue: Double, val count: Int, val avgBasket: Double)
 
     fun setDateRange(start: Long, end: Long) {
-        _startDate.value = DateFormatter.getStartOfDay(start)
-        _endDate.value = DateFormatter.getEndOfDay(end)
+        // start/end from MaterialDatePicker are UTC
+        _startDate.value = DateFormatter.getStartOfDay(start, sourceIsUtc = true)
+        _endDate.value = DateFormatter.getEndOfDay(end, sourceIsUtc = true)
     }
 
     fun setFilter(status: String) {

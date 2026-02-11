@@ -26,6 +26,7 @@ data class Product(
         @SerialName("category_id") val categoryId: Long,
         val name: String,
         val price: Double,
+        val cogs: Double = 0.0,
         val stock: Int? = null,
         @SerialName("image_path") val imagePath: String? = null,
         @SerialName("is_new") val isNew: Boolean = false,

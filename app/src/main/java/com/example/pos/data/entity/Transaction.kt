@@ -36,6 +36,7 @@ data class Transaction(
         val subtotal: Double,
         val tax: Double = 0.0,
         @SerialName("total_amount") val totalAmount: Double,
+        @SerialName("total_cogs") val totalCogs: Double = 0.0,
         @SerialName("amount_paid") val amountPaid: Double,
         @SerialName("change_amount") val changeAmount: Double = 0.0,
         @SerialName("bank_name") val bankName: String? = null,

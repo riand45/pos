@@ -70,10 +70,11 @@ class ProductEditDialogFragment : DialogFragment() {
             binding.dialogTitle.text = getString(R.string.edit_product)
             binding.inputName.setText(it.name)
             binding.inputPrice.setText(it.price.toString())
+            binding.inputCogs.setText(it.cogs.toString())
             binding.inputStock.setText(it.stock?.toString() ?: "")
             selectedCategoryId = it.categoryId
             currentImagePath = it.imagePath
-
+            
             it.imagePath?.let { path ->
                 val imgFile = java.io.File(path)
                 if (imgFile.exists()) {
@@ -90,6 +91,7 @@ class ProductEditDialogFragment : DialogFragment() {
         binding.btnSave.setOnClickListener {
             val name = binding.inputName.text.toString()
             val priceStr = binding.inputPrice.text.toString()
+            val cogsStr = binding.inputCogs.text.toString()
             val stockStr = binding.inputStock.text.toString()
 
             if (name.isBlank() || priceStr.isBlank() || selectedCategoryId == -1L) {
@@ -98,6 +100,7 @@ class ProductEditDialogFragment : DialogFragment() {
             }
 
             val price = priceStr.toDoubleOrNull() ?: 0.0
+            val cogs = cogsStr.toDoubleOrNull() ?: 0.0
             val stock = stockStr.toIntOrNull()
 
             // Save image if selected
@@ -107,13 +110,14 @@ class ProductEditDialogFragment : DialogFragment() {
             }
 
             if (product == null) {
-                viewModel.insert(selectedCategoryId, name, price, stock, currentImagePath)
+                viewModel.insert(selectedCategoryId, name, price, cogs, stock, currentImagePath)
             } else {
                 viewModel.update(
                         product!!,
                         selectedCategoryId,
                         name,
                         price,
+                        cogs,
                         stock,
                         currentImagePath
                 )

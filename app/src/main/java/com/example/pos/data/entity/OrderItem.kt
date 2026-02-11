@@ -34,6 +34,7 @@ data class OrderItem(
         @SerialName("product_name") val productName: String,
         val quantity: Int,
         @SerialName("unit_price") val unitPrice: Double,
+        val cogs: Double = 0.0,
         @SerialName("total_price") val totalPrice: Double,
         @ColumnInfo(name = "user_id") @SerialName("user_id") val userId: String = ""
 )

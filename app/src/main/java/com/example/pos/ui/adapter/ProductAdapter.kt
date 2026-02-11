@@ -39,6 +39,7 @@ class ProductAdapter(
 
             binding.productName.text = product.name
             binding.productPrice.text = CurrencyFormatter.format(product.price)
+            binding.productCogsValue.text = CurrencyFormatter.format(product.cogs)
             binding.productCategory.text = "Category" // Would need join query for actual category name
 
             val stock = product.stock ?: 0

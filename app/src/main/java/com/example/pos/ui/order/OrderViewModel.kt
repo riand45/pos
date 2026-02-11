@@ -125,6 +125,7 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
                             productId = product.id,
                             productName = product.name,
                             unitPrice = product.price,
+                            cogs = product.cogs,
                             quantity = quantity
                     )
             )
@@ -173,6 +174,7 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
                                 productName = cartItem.productName,
                                 quantity = cartItem.quantity,
                                 unitPrice = cartItem.unitPrice,
+                                cogs = cartItem.cogs,
                                 totalPrice = cartItem.totalPrice,
                                 userId = userId
                         )
@@ -191,7 +193,9 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
             customer: Customer? = null
     ) {
         viewModelScope.launch {
+            val orderItems = orderRepository.getItemsByOrderList(order.id)
             val subtotal = order.totalPrice
+            val totalCogs = orderItems.sumOf { it.cogs * it.quantity }
             val tax = 0.0
             val totalAmount = subtotal
             val change = if (paymentMethod == PaymentMethod.CASH) amountPaid - totalAmount else 0.0
@@ -204,6 +208,7 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
                             subtotal = subtotal,
                             tax = tax,
                             totalAmount = totalAmount,
+                            totalCogs = totalCogs,
                             amountPaid = amountPaid,
                             changeAmount = change,
                             bankName = bankName,
@@ -215,7 +220,6 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
             transactionRepository.insert(transaction)
             
             // Decrease stock for sold items
-            val orderItems = orderRepository.getItemsByOrderList(order.id)
             orderItems.forEach { item ->
                 productRepository.decreaseStock(item.productId, item.quantity)
             }
@@ -236,6 +240,7 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
             val productId: Long,
             val productName: String,
             val unitPrice: Double,
+            val cogs: Double = 0.0,
             var quantity: Int
     ) {
         val totalPrice: Double

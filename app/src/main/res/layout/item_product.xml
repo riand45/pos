@@ -130,6 +130,36 @@
 
             </LinearLayout>
 
+            <!-- HPP (COGS) Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="HPP (COGS)"
+                    android:textColor="@color/text_tertiary"
+                    android:textSize="@dimen/text_size_xs" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/product_cogs_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/status_success"
+                    android:textSize="@dimen/text_size_xs"
+                    tools:text="$150.00" />
+
+            </LinearLayout>
+
             <!-- Stock Row -->
             <LinearLayout
                 android:layout_width="match_parent"

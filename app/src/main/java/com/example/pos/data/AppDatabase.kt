@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
                         Transaction::class,
                         Expense::class,
                         Customer::class],
-        version = 5,
+        version = 6,
         exportSchema = false
 )
 @TypeConverters(Converters::class)

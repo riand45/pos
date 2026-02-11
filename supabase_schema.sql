@@ -14,6 +14,7 @@ create table products (
   category_id bigint references categories(id) on delete cascade,
   name text not null,
   price double precision not null,
+  cogs double precision default 0.0,
   stock int,
   image_path text,
   is_new boolean default false,
@@ -43,6 +44,7 @@ create table order_items (
   product_name text not null,
   quantity int not null,
   unit_price double precision not null,
+  cogs double precision default 0.0,
   total_price double precision not null,
   user_id uuid references auth.users not null default auth.uid()
 );
@@ -68,6 +70,7 @@ create table transactions (
   subtotal double precision not null,
   tax double precision default 0.0,
   total_amount double precision not null,
+  total_cogs double precision default 0.0,
   amount_paid double precision not null,
   change_amount double precision default 0.0,
   bank_name text,
@@ -147,3 +150,8 @@ create policy "customer_select" on customers for select to authenticated using (
 create policy "customer_insert" on customers for insert to authenticated with check (auth.uid() = user_id);
 create policy "customer_update" on customers for update to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
 create policy "customer_delete" on customers for delete to authenticated using (auth.uid() = user_id);
+
+-- COGS (HPP) Migration
+alter table products add column if not exists cogs double precision default 0.0;
+alter table order_items add column if not exists cogs double precision default 0.0;
+alter table transactions add column if not exists total_cogs double precision default 0.0;

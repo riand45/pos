@@ -33,6 +33,7 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
             categoryId: Long,
             name: String,
             price: Double,
+            cogs: Double = 0.0,
             stock: Int?,
             imagePath: String? = null
     ) {
@@ -42,6 +43,7 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
                             categoryId = categoryId,
                             name = name,
                             price = price,
+                            cogs = cogs,
                             stock = stock,
                             imagePath = imagePath,
                             userId = userId
@@ -55,6 +57,7 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
             categoryId: Long,
             name: String,
             price: Double,
+            cogs: Double = 0.0,
             stock: Int?,
             imagePath: String? = null
     ) {
@@ -64,6 +67,7 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
                             categoryId = categoryId,
                             name = name,
                             price = price,
+                            cogs = cogs,
                             stock = stock,
                             imagePath = imagePath ?: product.imagePath,
                             userId = userId

@@ -18,10 +18,29 @@ object ExportUtils {
         val file = File(context.cacheDir, fileName)
         
         val writer = file.bufferedWriter()
-        writer.write("ID,Date,Amount,Status,Refunded\n")
+        // Header
+        writer.write("Order Number,Date,Customer Name,Payment Method,Bank Name,Subtotal,Tax,Total Amount,Total COGS,Amount Paid,Change Amount,Status,Refunded\n")
         
         transactions.forEach {
-            writer.write("${it.id},${DateFormatter.formatLongDate(it.createdAt)},${it.totalAmount},${it.status},${it.isRefunded}\n")
+            val row = listOf(
+                it.orderNumber,
+                DateFormatter.formatLongDate(it.createdAt),
+                it.customerName ?: "-",
+                it.paymentMethod.name,
+                it.bankName ?: "-",
+                it.subtotal.toString(),
+                it.tax.toString(),
+                it.totalAmount.toString(),
+                it.totalCogs.toString(),
+                it.amountPaid.toString(),
+                it.changeAmount.toString(),
+                it.status,
+                it.isRefunded.toString()
+            ).joinToString(",") { field -> 
+                // Escape commas in fields if any
+                if (field.contains(",")) "\"$field\"" else field 
+            }
+            writer.write("$row\n")
         }
         writer.close()
         

@@ -60,7 +60,8 @@ class NewOrderDialogFragment : DialogFragment() {
 
         binding.btnConfirm.setOnClickListener {
             val tableInfo = binding.inputTable.text.toString().ifEmpty { null }
-            viewModel.createOrder(tableInfo)
+            val directProcess = binding.cbDirectProcess.isChecked
+            viewModel.createOrder(tableInfo, directProcess)
             dismiss()
         }
 

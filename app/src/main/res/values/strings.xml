@@ -114,6 +114,7 @@
     <string name="table_number">Table Number</string>
     <string name="select_products">SELECT PRODUCTS</string>
     <string name="create_order">CREATE ORDER</string>
+    <string name="direct_process">Langsung Proses</string>
     
     <!-- Settings -->
     <string name="settings">Settings</string>

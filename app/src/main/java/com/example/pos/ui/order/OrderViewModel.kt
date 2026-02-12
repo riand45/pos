@@ -143,7 +143,7 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
         _cartItems.value = mutableListOf()
     }
 
-    fun createOrder(tableInfo: String? = null) {
+    fun createOrder(tableInfo: String? = null, directProcess: Boolean = false) {
         viewModelScope.launch {
             val cart = _cartItems.value ?: return@launch
             if (cart.isEmpty()) return@launch
@@ -157,7 +157,7 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
             val order =
                     Order(
                             orderNumber = orderNumber,
-                            status = OrderStatus.QUEUE,
+                            status = if (directProcess) OrderStatus.PROCESS else OrderStatus.QUEUE,
                             totalItems = totalItems,
                             totalPrice = totalPrice,
                             tableInfo = tableInfo,

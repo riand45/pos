@@ -72,6 +72,15 @@
         android:textSize="@dimen/text_size_sm"
         android:textStyle="bold" />
 
+    <CheckBox
+        android:id="@+id/cb_direct_process"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_sm"
+        android:text="@string/direct_process"
+        android:textColor="@color/text_primary"
+        android:textSize="@dimen/text_size_sm" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/products_recycler"
         android:layout_width="match_parent"

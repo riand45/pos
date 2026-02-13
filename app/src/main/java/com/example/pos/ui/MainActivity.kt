@@ -53,6 +53,24 @@ class MainActivity : AppCompatActivity() {
         updateUserProfile()
         setupUserMenu()
         setupBackPress()
+        setupToolbar()
+    }
+
+    private fun setupToolbar() {
+        val isLandscape = resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+        
+        if (isLandscape) {
+            // In landscape, the sidebar is a direct child within a horizontal layout, 
+            // not a drawer child. DrawerLayout will throw an exception if we try to treat it as a drawer.
+            binding.drawerLayout.setDrawerLockMode(androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            binding.toolbar.navigationIcon = null
+        } else {
+            binding.drawerLayout.setDrawerLockMode(androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_UNLOCKED)
+            binding.toolbar.setNavigationIcon(R.drawable.ic_menu)
+            binding.toolbar.setNavigationOnClickListener {
+                binding.drawerLayout.openDrawer(GravityCompat.START)
+            }
+        }
     }
 
     private fun setupNavigationLogic() {
@@ -69,7 +87,20 @@ class MainActivity : AppCompatActivity() {
         // Add listener AFTER everything is initialized to avoid UninitializedPropertyAccessException
         navController.addOnDestinationChangedListener { _, destination, _ ->
             updateSelectedNav(destination.id)
-            binding.sidebar.visibility = if (destination.id == R.id.nav_login) View.GONE else View.VISIBLE
+            val isLogin = destination.id == R.id.nav_login
+            // Toolbar should be hidden on login screen
+            binding.appBar.visibility = if (isLogin) View.GONE else View.VISIBLE
+            
+            // Handle sidebar visibility based on orientation and login state
+            val isLandscape = resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+            if (isLandscape) {
+                binding.sidebar.visibility = if (isLogin) View.GONE else View.VISIBLE
+            } else {
+                // In portrait, the sidebar is always visible as a drawer child when opened, 
+                // but the drawer itself should be hidden on login screen.
+                // However, we already lock the drawer in setupToolbar if needed.
+                closeDrawerIfOpen()
+            }
         }
     }
 
@@ -78,9 +109,12 @@ class MainActivity : AppCompatActivity() {
                 NavAdapter(navItems) { navItem ->
                     if (navItem.destinationId == -1) {
                         performLogout()
-                    } else {
+                    } else if (navController.currentDestination?.id != navItem.destinationId) {
                         navController.navigate(navItem.destinationId)
                         updateSelectedNav(navItem.destinationId)
+                        closeDrawerIfOpen()
+                    } else {
+                        closeDrawerIfOpen()
                     }
                 }
 
@@ -115,10 +149,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupBackPress() {
-        
         onBackPressedDispatcher.addCallback(this, object : androidx.activity.OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                val isLandscape = resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+                if (!isLandscape && binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
                 } else {
                     isEnabled = false
@@ -127,6 +161,20 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    private fun closeDrawerIfOpen() {
+        val isLandscape = resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+        // Only try to close if it's NOT landscape AND drawer is actually open
+        if (!isLandscape) {
+            try {
+                if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                }
+            } catch (e: Exception) {
+                // Ignore if it's not a drawer in the current layout
+            }
+        }
     }
 
     private fun performLogout() {
@@ -142,7 +190,7 @@ class MainActivity : AppCompatActivity() {
                         withContext(Dispatchers.Main) {
                             updateUserProfile()
                             navController.navigate(R.id.nav_login)
-                            binding.drawerLayout.closeDrawer(GravityCompat.START)
+                            closeDrawerIfOpen()
                         }
                     } catch (e: Exception) {}
                 }

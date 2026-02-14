@@ -13,34 +13,43 @@ import java.io.FileOutputStream
 
 object ExportUtils {
 
-    fun exportToCsv(context: Context, transactions: List<Transaction>) {
+    fun exportToCsv(context: Context, transactions: List<com.example.pos.data.entity.TransactionWithItems>) {
         val fileName = "History_${System.currentTimeMillis()}.csv"
         val file = File(context.cacheDir, fileName)
         
         val writer = file.bufferedWriter()
         // Header
-        writer.write("Order Number,Date,Customer Name,Payment Method,Bank Name,Subtotal,Tax,Total Amount,Total COGS,Amount Paid,Change Amount,Status,Refunded\n")
+        writer.write("Order Number,Date,Customer Name,Payment Method,Bank Name,Product Name,Quantity,Unit Price,Item Total,Subtotal,Tax,Total Amount,Total COGS,Amount Paid,Change Amount,Status,Refunded\n")
         
-        transactions.forEach {
-            val row = listOf(
-                it.orderNumber,
-                DateFormatter.formatLongDate(it.createdAt),
-                it.customerName ?: "-",
-                it.paymentMethod.name,
-                it.bankName ?: "-",
-                it.subtotal.toString(),
-                it.tax.toString(),
-                it.totalAmount.toString(),
-                it.totalCogs.toString(),
-                it.amountPaid.toString(),
-                it.changeAmount.toString(),
-                it.status,
-                it.isRefunded.toString()
-            ).joinToString(",") { field -> 
-                // Escape commas in fields if any
-                if (field.contains(",")) "\"$field\"" else field 
+        transactions.forEach { transWithItems ->
+            val trans = transWithItems.transaction
+            val items = transWithItems.items
+            
+            items.forEach { item ->
+                val row = listOf(
+                    trans.orderNumber,
+                    DateFormatter.formatLongDate(trans.createdAt),
+                    trans.customerName ?: "-",
+                    trans.paymentMethod.name,
+                    trans.bankName ?: "-",
+                    item.productName,
+                    item.quantity.toString(),
+                    item.unitPrice.toString(),
+                    item.totalPrice.toString(),
+                    trans.subtotal.toString(),
+                    trans.tax.toString(),
+                    trans.totalAmount.toString(),
+                    trans.totalCogs.toString(),
+                    trans.amountPaid.toString(),
+                    trans.changeAmount.toString(),
+                    trans.status,
+                    trans.isRefunded.toString()
+                ).joinToString(",") { field -> 
+                    // Escape commas in fields if any
+                    if (field.contains(",")) "\"$field\"" else field 
+                }
+                writer.write("$row\n")
             }
-            writer.write("$row\n")
         }
         writer.close()
         

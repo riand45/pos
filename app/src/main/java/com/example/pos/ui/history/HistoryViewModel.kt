@@ -107,4 +107,12 @@ class HistoryViewModel(application: Application) : AndroidViewModel(application)
             transactionRepository.update(transaction.copy(isRefunded = true, status = "Refunded"))
         }
     }
+
+    suspend fun getTransactionsWithItemsForExport(): List<com.example.pos.data.entity.TransactionWithItems> {
+        val start = _startDate.value ?: DateFormatter.getStartOfDay(System.currentTimeMillis() - 30L * 24 * 60 * 60 * 1000)
+        val end = _endDate.value ?: DateFormatter.getEndOfDay(System.currentTimeMillis())
+        val uid = posApp.currentUserId.value ?: userId
+        
+        return transactionRepository.getTransactionsWithItemsByDateRange(uid, start, end)
+    }
 }

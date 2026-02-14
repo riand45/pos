@@ -24,6 +24,13 @@ class TransactionRepository(val transactionDao: TransactionDao) {
     ): LiveData<List<Transaction>> =
             transactionDao.getTransactionsByDateRange(userId, startDate, endDate)
 
+    suspend fun getTransactionsWithItemsByDateRange(
+            userId: String,
+            startDate: Long,
+            endDate: Long
+    ): List<com.example.pos.data.entity.TransactionWithItems> =
+            transactionDao.getTransactionsWithItemsByDateRange(userId, startDate, endDate)
+
     fun getTotalRevenueByDate(userId: String, dateMillis: Long): LiveData<Double> =
             transactionDao.getTotalRevenueByDate(userId, dateMillis)
 

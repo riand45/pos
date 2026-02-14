@@ -12,6 +12,16 @@ interface TransactionDao {
         @Query("SELECT * FROM transactions WHERE user_id = :userId ORDER BY createdAt DESC")
         suspend fun getAllTransactionsList(userId: String): List<Transaction>
 
+        @androidx.room.Transaction
+        @Query(
+                "SELECT * FROM transactions WHERE user_id = :userId AND createdAt BETWEEN :startDate AND :endDate ORDER BY createdAt DESC"
+        )
+        suspend fun getTransactionsWithItemsByDateRange(
+                userId: String,
+                startDate: Long,
+                endDate: Long
+        ): List<com.example.pos.data.entity.TransactionWithItems>
+
         @Query(
                 "SELECT * FROM transactions WHERE user_id = :userId AND createdAt BETWEEN :startDate AND :endDate ORDER BY createdAt DESC"
         )

@@ -17,8 +17,10 @@ import com.example.pos.utils.DateFormatter
 import com.example.pos.utils.ExportUtils
 import androidx.fragment.app.viewModels
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.MaterialDatePicker
 import androidx.core.util.Pair
+import kotlinx.coroutines.launch
 import java.util.*
 
 class HistoryFragment : Fragment() {
@@ -149,8 +151,9 @@ class HistoryFragment : Fragment() {
     }
 
     private fun exportToCsv() {
-        viewModel.transactions.value?.let { list ->
-            ExportUtils.exportToCsv(requireContext(), list)
+        viewLifecycleOwner.lifecycleScope.launch {
+            val transactionsWithItems = viewModel.getTransactionsWithItemsForExport()
+            ExportUtils.exportToCsv(requireContext(), transactionsWithItems)
         }
     }
 

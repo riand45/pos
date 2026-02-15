@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Dark Theme Colors -->
+    <color name="background_primary">#0D1117</color>
+    <color name="background_secondary">#161B22</color>
+    <color name="background_tertiary">#21262D</color>
+    <color name="background_card">#1C2128</color>
+    
+    <!-- Accent Colors -->
+    <color name="accent_primary">#00BCD4</color>
+    <color name="accent_primary_dark">#0097A7</color>
+    <color name="accent_secondary">#26C6DA</color>
+    <color name="accent_light">#4DD0E1</color>
+    
+    <!-- Status Colors -->
+    <color name="status_success">#22C55E</color>
+    <color name="status_warning">#F59E0B</color>
+    <color name="status_error">#EF4444</color>
+    <color name="status_info">#3B82F6</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#8B949E</color>
+    <color name="text_tertiary">#6E7681</color>
+    <color name="text_disabled">#484F58</color>
+    
+    <!-- Surface Colors -->
+    <color name="surface_elevated">#2D333B</color>
+    <color name="border_color">#30363D</color>
+    <color name="border_light">#21262D</color>
+    
+    <!-- Order Status Colors -->
+    <color name="status_queue">#F59E0B</color>
+    <color name="status_process">#3B82F6</color>
+    <color name="status_done">#22C55E</color>
+    
+    <!-- Payment Colors -->
+    <color name="payment_cash">#22C55E</color>
+    <color name="payment_transfer">#6366F1</color>
+    
+    <!-- Misc -->
+    <color name="overlay_dark">#80000000</color>
+    <color name="ripple_light">#1AFFFFFF</color>
+    <color name="low_stock">#EF4444</color>
+</resources>

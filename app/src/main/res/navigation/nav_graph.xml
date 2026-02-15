@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_login">
+
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="com.example.pos.ui.auth.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_login_to_main"
+            app:destination="@id/nav_orders"
+            app:popUpTo="@id/nav_login"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_dashboard"
+        android:name="com.example.pos.ui.dashboard.DashboardFragment"
+        android:label="@string/nav_dashboard"
+        tools:layout="@layout/fragment_dashboard" />
+
+    <fragment
+        android:id="@+id/nav_categories"
+        android:name="com.example.pos.ui.category.CategoryFragment"
+        android:label="@string/nav_categories"
+        tools:layout="@layout/fragment_category" />
+
+    <fragment
+        android:id="@+id/nav_products"
+        android:name="com.example.pos.ui.product.ProductFragment"
+        android:label="@string/nav_products"
+        tools:layout="@layout/fragment_product" />
+
+    <fragment
+        android:id="@+id/nav_orders"
+        android:name="com.example.pos.ui.order.OrderKanbanFragment"
+        android:label="@string/nav_orders"
+        tools:layout="@layout/fragment_order_kanban" />
+
+    <fragment
+        android:id="@+id/nav_history"
+        android:name="com.example.pos.ui.history.HistoryFragment"
+        android:label="@string/nav_history"
+        tools:layout="@layout/fragment_history" />
+
+    <fragment
+        android:id="@+id/nav_expense"
+        android:name="com.example.pos.ui.expense.ExpenseFragment"
+        android:label="Pengeluaran"
+        tools:layout="@layout/fragment_expense" />
+
+    <fragment
+        android:id="@+id/nav_sync"
+        android:name="com.example.pos.ui.sync.SyncFragment"
+        android:label="Backup &amp; Sync"
+        tools:layout="@layout/fragment_sync" />
+
+    <fragment
+        android:id="@+id/nav_customers"
+        android:name="com.example.pos.ui.customer.CustomerListFragment"
+        android:label="Customers"
+        tools:layout="@layout/fragment_customer_list">
+        <action
+            android:id="@+id/action_customers_to_detail"
+            app:destination="@id/nav_customer_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_customer_detail"
+        android:name="com.example.pos.ui.customer.CustomerDetailFragment"
+        android:label="Customer Detail"
+        tools:layout="@layout/fragment_customer_detail">
+        <argument
+            android:name="customerId"
+            app:argType="long"
+            android:defaultValue="-1L" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="com.example.pos.ui.settings.SettingsFragment"
+        android:label="@string/nav_settings"
+        tools:layout="@layout/fragment_settings" />
+
+</navigation>

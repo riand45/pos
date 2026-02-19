@@ -176,6 +176,7 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
                                 unitPrice = cartItem.unitPrice,
                                 cogs = cartItem.cogs,
                                 totalPrice = cartItem.totalPrice,
+                                netIncome = (cartItem.unitPrice - cartItem.cogs) * cartItem.quantity,
                                 userId = userId
                         )
                     }
@@ -209,6 +210,7 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
                             tax = tax,
                             totalAmount = totalAmount,
                             totalCogs = totalCogs,
+                            netIncomeTotal = totalAmount - totalCogs,
                             amountPaid = amountPaid,
                             changeAmount = change,
                             bankName = bankName,

@@ -46,6 +46,7 @@ create table order_items (
   unit_price double precision not null,
   cogs double precision default 0.0,
   total_price double precision not null,
+  net_income double precision default 0.0,
   user_id uuid references auth.users not null default auth.uid()
 );
 
@@ -71,6 +72,7 @@ create table transactions (
   tax double precision default 0.0,
   total_amount double precision not null,
   total_cogs double precision default 0.0,
+  net_income_total double precision default 0.0,
   amount_paid double precision not null,
   change_amount double precision default 0.0,
   bank_name text,
@@ -155,3 +157,5 @@ create policy "customer_delete" on customers for delete to authenticated using (
 alter table products add column if not exists cogs double precision default 0.0;
 alter table order_items add column if not exists cogs double precision default 0.0;
 alter table transactions add column if not exists total_cogs double precision default 0.0;
+alter table order_items add column if not exists net_income double precision default 0.0;
+alter table transactions add column if not exists net_income_total double precision default 0.0;

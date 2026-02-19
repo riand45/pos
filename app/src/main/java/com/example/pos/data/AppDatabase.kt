@@ -8,6 +8,7 @@ import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.pos.data.dao.*
 import com.example.pos.data.entity.*
+import androidx.room.migration.Migration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,7 +23,7 @@ import kotlinx.coroutines.launch
                         Transaction::class,
                         Expense::class,
                         Customer::class],
-        version = 6,
+        version = 7,
         exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -34,9 +35,25 @@ abstract class AppDatabase : RoomDatabase() {
         abstract fun transactionDao(): TransactionDao
         abstract fun expenseDao(): ExpenseDao
         abstract fun customerDao(): CustomerDao
-
+ 
         companion object {
                 @Volatile private var INSTANCE: AppDatabase? = null
+ 
+                val MIGRATION_6_7 = object : Migration(6, 7) {
+                        override fun migrate(db: SupportSQLiteDatabase) {
+                                // Add netIncome to order_items
+                                db.execSQL("ALTER TABLE order_items ADD COLUMN netIncome REAL NOT NULL DEFAULT 0.0")
+                                
+                                // Add netIncomeTotal to transactions
+                                db.execSQL("ALTER TABLE transactions ADD COLUMN netIncomeTotal REAL NOT NULL DEFAULT 0.0")
+                                
+                                // Update existing netIncome for order_items: (unitPrice - cogs) * quantity
+                                db.execSQL("UPDATE order_items SET netIncome = (unitPrice - cogs) * quantity")
+                                
+                                // Update existing netIncomeTotal for transactions: totalAmount - totalCogs
+                                db.execSQL("UPDATE transactions SET netIncomeTotal = totalAmount - totalCogs")
+                        }
+                }
 
                 fun getDatabase(context: Context): AppDatabase {
                         return INSTANCE
@@ -47,6 +64,7 @@ abstract class AppDatabase : RoomDatabase() {
                                                                 AppDatabase::class.java,
                                                                 "pos_database"
                                                         )
+                                                        .addMigrations(MIGRATION_6_7)
                                                         .fallbackToDestructiveMigration()
                                                         .addCallback(DatabaseCallback())
                                                         .build()

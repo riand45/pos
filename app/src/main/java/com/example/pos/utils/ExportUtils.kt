@@ -19,7 +19,7 @@ object ExportUtils {
         
         val writer = file.bufferedWriter()
         // Header
-        writer.write("Order Number,Date,Customer Name,Payment Method,Bank Name,Product Name,Quantity,Unit Price,Item Total,Subtotal,Tax,Total Amount,Total COGS,Amount Paid,Change Amount,Status,Refunded\n")
+        writer.write("Order Number,Date,Customer Name,Payment Method,Bank Name,Product Name,Quantity,Unit Price,Item Total,Item Net Income,Subtotal,Tax,Total Amount,Total COGS,Total Net Income,Amount Paid,Change Amount,Status,Refunded\n")
         
         transactions.forEach { transWithItems ->
             val trans = transWithItems.transaction
@@ -36,10 +36,12 @@ object ExportUtils {
                     item.quantity.toString(),
                     item.unitPrice.toString(),
                     item.totalPrice.toString(),
+                    item.netIncome.toString(),
                     trans.subtotal.toString(),
                     trans.tax.toString(),
                     trans.totalAmount.toString(),
                     trans.totalCogs.toString(),
+                    trans.netIncomeTotal.toString(),
                     trans.amountPaid.toString(),
                     trans.changeAmount.toString(),
                     trans.status,

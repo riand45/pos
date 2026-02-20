@@ -34,6 +34,18 @@ class TransactionRepository(val transactionDao: TransactionDao) {
     fun getTotalRevenueByDate(userId: String, dateMillis: Long): LiveData<Double> =
             transactionDao.getTotalRevenueByDate(userId, dateMillis)
 
+    fun getTotalRevenueRange(userId: String, startDate: Long, endDate: Long): LiveData<Double> =
+            transactionDao.getTotalRevenueRange(userId, startDate, endDate)
+
+    fun getTotalCogsRange(userId: String, startDate: Long, endDate: Long): LiveData<Double> =
+            transactionDao.getTotalCogsRange(userId, startDate, endDate)
+
+    fun getTotalProfitRange(userId: String, startDate: Long, endDate: Long): LiveData<Double> =
+            transactionDao.getTotalProfitRange(userId, startDate, endDate)
+
+    fun getTransactionsByRange(userId: String, startDate: Long, endDate: Long): LiveData<List<Transaction>> =
+            transactionDao.getTransactionsByRange(userId, startDate, endDate)
+
     suspend fun insert(transaction: Transaction): Long = transactionDao.insert(transaction)
 
     suspend fun update(transaction: Transaction) = transactionDao.update(transaction)

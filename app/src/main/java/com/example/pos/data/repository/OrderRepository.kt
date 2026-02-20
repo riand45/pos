@@ -82,4 +82,10 @@ class OrderRepository(val orderDao: OrderDao, val orderItemDao: OrderItemDao) {
     suspend fun insertOrderItems(orderItems: List<OrderItem>) = orderItemDao.insertAll(orderItems)
 
     suspend fun deleteOrderItems(orderId: Long) = orderItemDao.deleteByOrderId(orderId)
+
+    fun getTopSellingProducts(userId: String, limit: Int) =
+            orderItemDao.getTopSellingProducts(userId, limit)
+
+    fun getProductsSoldByDateRange(userId: String, startDate: Long, endDate: Long, limit: Int) =
+            orderItemDao.getProductsSoldByDateRange(userId, startDate, endDate, limit)
 }

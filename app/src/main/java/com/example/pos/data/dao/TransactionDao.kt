@@ -59,6 +59,27 @@ interface TransactionDao {
         @Query("SELECT * FROM transactions WHERE id = :id")
         suspend fun getTransactionById(id: Long): Transaction?
 
+
+        @Query(
+                "SELECT COALESCE(SUM(totalAmount), 0.0) FROM transactions WHERE user_id = :userId AND createdAt BETWEEN :startDate AND :endDate AND status = 'Success' AND isRefunded = 0"
+        )
+        fun getTotalRevenueRange(userId: String, startDate: Long, endDate: Long): LiveData<Double>
+
+        @Query(
+                "SELECT COALESCE(SUM(totalCogs), 0.0) FROM transactions WHERE user_id = :userId AND createdAt BETWEEN :startDate AND :endDate AND status = 'Success' AND isRefunded = 0"
+        )
+        fun getTotalCogsRange(userId: String, startDate: Long, endDate: Long): LiveData<Double>
+
+        @Query(
+                "SELECT COALESCE(SUM(netIncomeTotal), 0.0) FROM transactions WHERE user_id = :userId AND createdAt BETWEEN :startDate AND :endDate AND status = 'Success' AND isRefunded = 0"
+        )
+        fun getTotalProfitRange(userId: String, startDate: Long, endDate: Long): LiveData<Double>
+
+        @Query(
+                "SELECT * FROM transactions WHERE user_id = :userId AND createdAt BETWEEN :startDate AND :endDate ORDER BY createdAt DESC"
+        )
+        fun getTransactionsByRange(userId: String, startDate: Long, endDate: Long): LiveData<List<Transaction>>
+
         @Insert(onConflict = OnConflictStrategy.REPLACE)
         suspend fun insert(transaction: Transaction): Long
 

@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
                     NavItem(R.id.nav_products, "Products", R.drawable.ic_product),
                     NavItem(R.id.nav_orders, "Orders", R.drawable.ic_orders),
                     NavItem(R.id.nav_history, "History", R.drawable.ic_history),
+                    NavItem(R.id.nav_report, "Report & Analytics", R.drawable.ic_dashboard),
                     NavItem(R.id.nav_customers, "Customers", R.drawable.ic_people),
                     NavItem(R.id.nav_expense, "Expenses", R.drawable.ic_money),
                     NavItem(R.id.nav_sync, "Backup & Sync", R.drawable.ic_backup),

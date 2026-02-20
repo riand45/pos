@@ -9,6 +9,14 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class ProductSalesReport(
+    @SerialName("product_id") val productId: Long,
+    @SerialName("product_name") val productName: String,
+    @SerialName("total_quantity") val totalQuantity: Int,
+    @SerialName("total_sales") val totalSales: Double
+)
+
+@Serializable
 @Entity(
         tableName = "order_items",
         foreignKeys =

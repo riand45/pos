@@ -53,6 +53,44 @@ object ExportUtils {
                 writer.write("$row\n")
             }
         }
+
+        // Calculate Totals
+        val totalQuantity = transactions.flatMap { it.items }.sumOf { it.quantity }
+        val totalItemSales = transactions.flatMap { it.items }.sumOf { it.totalPrice }
+        val totalItemNetIncome = transactions.flatMap { it.items }.sumOf { it.netIncome }
+        
+        val totalSubtotal = transactions.sumOf { it.transaction.subtotal }
+        val totalTax = transactions.sumOf { it.transaction.tax }
+        val totalRevenue = transactions.sumOf { it.transaction.totalAmount }
+        val totalCogs = transactions.sumOf { it.transaction.totalCogs }
+        val totalProfit = transactions.sumOf { it.transaction.netIncomeTotal }
+        val totalPaid = transactions.sumOf { it.transaction.amountPaid }
+        val totalChange = transactions.sumOf { it.transaction.changeAmount }
+
+        // Write Total Row
+        val totalRow = listOf(
+            "TOTAL",
+            "",
+            "",
+            "",
+            "",
+            "",
+            totalQuantity.toString(),
+            "",
+            totalItemSales.toString(),
+            totalItemNetIncome.toString(),
+            totalSubtotal.toString(),
+            totalTax.toString(),
+            totalRevenue.toString(),
+            totalCogs.toString(),
+            totalProfit.toString(),
+            totalPaid.toString(),
+            totalChange.toString(),
+            "",
+            ""
+        ).joinToString(",")
+        writer.write("$totalRow\n")
+
         writer.close()
         
         shareFile(context, file, "text/csv")

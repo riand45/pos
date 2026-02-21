@@ -32,7 +32,7 @@ interface OrderItemDao {
            "FROM order_items oi " +
            "INNER JOIN orders o ON oi.orderId = o.id " +
            "WHERE o.user_id = :userId " +
-           "AND o.status = 'DONE' " +
+           "AND o.status IN ('DONE', 'ARCHIVED') " +
            "AND o.createdAt BETWEEN :startDate AND :endDate " +
            "GROUP BY oi.productId " +
            "ORDER BY totalQuantity DESC " +

@@ -44,7 +44,7 @@ class ReportViewModel(application: Application) : AndroidViewModel(application) 
         val uid = posApp.currentUserId.value ?: userId
         val start = _startDate.value ?: DateFormatter.getStartOfDay(System.currentTimeMillis())
         val end = _endDate.value ?: DateFormatter.getEndOfDay(System.currentTimeMillis())
-        orderRepository.getProductsSoldByDateRange(uid, start, end, 5)
+        orderRepository.getProductsSoldByDateRange(uid, start, end, 50)
     }
 
     val lowStockProducts: LiveData<List<Product>> = productRepository.getLowStockProducts()

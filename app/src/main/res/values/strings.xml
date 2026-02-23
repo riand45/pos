@@ -100,6 +100,11 @@
     <!-- Misc -->
     <string name="terminal_info">Main Terminal v2.4</string>
     <string name="live_system">LIVE SYSTEM</string>
+    <string name="offline_mode">MASUK OFFLINE (LOCAL)</string>
+    <string name="offline_mode_hint">Akses data lokal tanpa internet</string>
+    <string name="session_lost_title">Sesi Hilang</string>
+    <string name="session_lost_message">Selesai sesi atau data lokal tidak ditemukan. Silakan hubungkan ke internet untuk login pertama kali.</string>
+    <string name="internet_required">Koneksi Internet Diperlukan</string>
     <string name="sorted_by">Sorted by:</string>
     <string name="newest_first">Newest First</string>
     <string name="oldest_first">Oldest First</string>

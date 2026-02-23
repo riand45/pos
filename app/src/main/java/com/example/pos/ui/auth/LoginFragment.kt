@@ -14,8 +14,10 @@ import androidx.navigation.fragment.findNavController
 import io.github.jan.supabase.gotrue.auth
 import com.example.pos.PosApplication
 import com.example.pos.R
+import com.example.pos.utils.NetworkUtils
 import com.example.pos.ui.MainActivity
 import com.example.pos.databinding.FragmentLoginBinding
+import androidx.appcompat.app.AlertDialog
 import kotlinx.coroutines.launch
 
 class AuthViewModelFactory(private val application: PosApplication) : ViewModelProvider.Factory {
@@ -74,6 +76,10 @@ class LoginFragment : Fragment() {
             }
         }
 
+        binding.offlineButton.setOnClickListener {
+            handleOfflineAccess()
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.authState.collect { state ->
                 when (state) {
@@ -99,6 +105,28 @@ class LoginFragment : Fragment() {
     private fun navigateToMain() {
         (requireActivity() as? MainActivity)?.updateUserProfile()
         findNavController().navigate(R.id.action_login_to_main)
+    }
+
+    private fun handleOfflineAccess() {
+        val hasSession = viewModel.currentUserUserId != null
+        
+        if (hasSession) {
+            // Already have a session, safe to enter
+            navigateToMain()
+        } else {
+            // No session, check internet
+            if (NetworkUtils.isInternetAvailable(requireContext())) {
+                // Online but no session, prompt to login
+                Toast.makeText(context, "Sesi tidak ditemukan. Silakan login terlebih dahulu.", Toast.LENGTH_SHORT).show()
+            } else {
+                // Offline and no session, show notification to use internet first
+                AlertDialog.Builder(requireContext())
+                    .setTitle(R.string.session_lost_title)
+                    .setMessage(R.string.session_lost_message)
+                    .setPositiveButton("OK", null)
+                    .show()
+            }
+        }
     }
 
     private fun checkExistingSession() {

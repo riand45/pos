@@ -29,6 +29,8 @@ data class Product(
         val cogs: Double = 0.0,
         val stock: Int? = null,
         @SerialName("image_path") val imagePath: String? = null,
+        val sku: String? = null,
+        @SerialName("discount_price") val discountPrice: Double? = null,
         @SerialName("is_new") val isNew: Boolean = false,
         @SerialName("created_at") val createdAt: Long = System.currentTimeMillis(),
         @ColumnInfo(name = "user_id") @SerialName("user_id") val userId: String = ""

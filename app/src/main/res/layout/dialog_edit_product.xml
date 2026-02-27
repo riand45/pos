@@ -135,6 +135,64 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_sku"
+            style="@style/PosTextInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_md"
+            android:hint="SKU / Barcode">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_sku"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:textColor="@color/text_primary" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_discount_price"
+            style="@style/PosTextInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_md"
+            android:hint="Discount Price (Optional)">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_discount_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:textColor="@color/text_primary" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lg"
+            android:text="Variants"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_size_md"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/variant_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/spacing_sm" />
+
+        <Button
+            android:id="@+id/btn_add_variant"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+ Add Variant"
+            android:icon="@drawable/ic_add" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.pos.PosApplication
 import com.example.pos.data.entity.Product
 import io.github.jan.supabase.gotrue.auth
+import com.example.pos.data.entity.ProductVariant
+import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.launch
 
 class ProductViewModel(application: Application) : AndroidViewModel(application) {
@@ -35,10 +37,13 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
             price: Double,
             cogs: Double = 0.0,
             stock: Int?,
-            imagePath: String? = null
+            imagePath: String? = null,
+            sku: String? = null,
+            discountPrice: Double? = null,
+            variants: List<ProductVariant> = emptyList()
     ) {
         viewModelScope.launch {
-            productRepository.insert(
+            val productId = productRepository.insert(
                     Product(
                             categoryId = categoryId,
                             name = name,
@@ -46,9 +51,15 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
                             cogs = cogs,
                             stock = stock,
                             imagePath = imagePath,
+                            sku = sku,
+                            discountPrice = discountPrice,
                             userId = userId
                     )
             )
+            if (variants.isNotEmpty()) {
+                val variantsWithId = variants.map { it.copy(productId = productId, userId = userId) }
+                productRepository.insertVariants(variantsWithId)
+            }
         }
     }
 
@@ -59,7 +70,9 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
             price: Double,
             cogs: Double = 0.0,
             stock: Int?,
-            imagePath: String? = null
+            imagePath: String? = null,
+            sku: String? = null,
+            discountPrice: Double? = null
     ) {
         viewModelScope.launch {
             productRepository.update(
@@ -70,6 +83,8 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
                             cogs = cogs,
                             stock = stock,
                             imagePath = imagePath ?: product.imagePath,
+                            sku = sku ?: product.sku,
+                            discountPrice = discountPrice ?: product.discountPrice,
                             userId = userId
                     )
             )
@@ -78,5 +93,17 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
 
     fun delete(product: Product) {
         viewModelScope.launch { productRepository.delete(product) }
+    }
+
+    // Variant management
+    fun getVariantsByProduct(productId: Long): LiveData<List<ProductVariant>> =
+        productRepository.getVariantsByProduct(productId).asLiveData()
+
+    fun saveVariants(productId: Long, variants: List<ProductVariant>) {
+        viewModelScope.launch {
+            productRepository.deleteVariantsByProduct(productId)
+            val variantsWithId = variants.map { it.copy(productId = productId, userId = userId) }
+            productRepository.insertVariants(variantsWithId)
+        }
     }
 }

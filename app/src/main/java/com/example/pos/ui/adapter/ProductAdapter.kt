@@ -38,7 +38,18 @@ class ProductAdapter(
             val context = binding.root.context
 
             binding.productName.text = product.name
-            binding.productPrice.text = CurrencyFormatter.format(product.price)
+            binding.productSku.text = product.sku?.let { "SKU: $it" } ?: ""
+            binding.productSku.visibility = if (product.sku.isNullOrBlank()) View.GONE else View.VISIBLE
+
+            if (product.discountPrice != null && product.discountPrice > 0) {
+                binding.productOriginalPrice.visibility = View.VISIBLE
+                binding.productOriginalPrice.text = CurrencyFormatter.format(product.price)
+                binding.productOriginalPrice.paintFlags = binding.productOriginalPrice.paintFlags or android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
+                binding.productPrice.text = CurrencyFormatter.format(product.discountPrice)
+            } else {
+                binding.productOriginalPrice.visibility = View.GONE
+                binding.productPrice.text = CurrencyFormatter.format(product.price)
+            }
             binding.productCogsValue.text = CurrencyFormatter.format(product.cogs)
             binding.productCategory.text = "Category" // Would need join query for actual category name
 

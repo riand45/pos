@@ -33,7 +33,7 @@ class PosApplication : Application() {
     val database by lazy { AppDatabase.getDatabase(this) }
 
     val categoryRepository by lazy { CategoryRepository(database.categoryDao()) }
-    val productRepository by lazy { ProductRepository(database.productDao()) }
+    val productRepository by lazy { ProductRepository(database.productDao(), database.productVariantDao()) }
     val orderRepository by lazy { OrderRepository(database.orderDao(), database.orderItemDao()) }
     val transactionRepository by lazy { TransactionRepository(database.transactionDao()) }
     val expenseRepository by lazy { ExpenseRepository(database.expenseDao()) }

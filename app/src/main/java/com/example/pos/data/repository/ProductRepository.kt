@@ -2,9 +2,15 @@ package com.example.pos.data.repository
 
 import androidx.lifecycle.LiveData
 import com.example.pos.data.dao.ProductDao
+import com.example.pos.data.dao.ProductVariantDao
 import com.example.pos.data.entity.Product
+import com.example.pos.data.entity.ProductVariant
+import kotlinx.coroutines.flow.Flow
 
-class ProductRepository(val productDao: ProductDao) {
+class ProductRepository(
+    val productDao: ProductDao,
+    val variantDao: ProductVariantDao
+) {
     fun getAllProducts(userId: String): LiveData<List<Product>> = productDao.getAllProducts(userId)
 
     fun getProductsByCategory(categoryId: Long, userId: String): LiveData<List<Product>> =
@@ -27,4 +33,17 @@ class ProductRepository(val productDao: ProductDao) {
 
     suspend fun decreaseStock(productId: Long, quantity: Int) =
             productDao.decreaseStock(productId, quantity)
+
+    // Variant methods
+    fun getVariantsByProduct(productId: Long): Flow<List<ProductVariant>> =
+        variantDao.getVariantsByProduct(productId)
+
+    suspend fun getVariantsByProductSync(productId: Long): List<ProductVariant> =
+        variantDao.getVariantsByProductSync(productId)
+
+    suspend fun insertVariants(variants: List<ProductVariant>) =
+        variantDao.insertAll(variants)
+
+    suspend fun deleteVariantsByProduct(productId: Long) =
+        variantDao.deleteByProduct(productId)
 }

@@ -113,9 +113,19 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
         _orderItems.value = emptyList()
     }
 
-    fun addToCart(product: Product, quantity: Int = 1) {
+    fun addToCart(product: Product, quantity: Int = 1, variant: ProductVariant? = null) {
         val currentCart = _cartItems.value ?: mutableListOf()
-        val existingItem = currentCart.find { it.productId == product.id }
+        val existingItem = currentCart.find { 
+            it.productId == product.id && it.variantId == variant?.id 
+        }
+        
+        val priceToUse = when {
+            variant != null -> variant.price
+            product.discountPrice != null && product.discountPrice > 0 -> product.discountPrice 
+            else -> product.price
+        }
+        
+        val nameToUse = if (variant != null) "${product.name} (${variant.name})" else product.name
 
         if (existingItem != null) {
             existingItem.quantity += quantity
@@ -123,19 +133,21 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
             currentCart.add(
                     CartItem(
                             productId = product.id,
-                            productName = product.name,
-                            unitPrice = product.price,
+                            productName = nameToUse,
+                            unitPrice = priceToUse,
                             cogs = product.cogs,
-                            quantity = quantity
+                            quantity = quantity,
+                            variantId = variant?.id,
+                            variantName = variant?.name
                     )
             )
         }
         _cartItems.value = currentCart
     }
 
-    fun removeFromCart(productId: Long) {
+    fun removeFromCart(productId: Long, variantId: Long? = null) {
         val currentCart = _cartItems.value ?: mutableListOf()
-        currentCart.removeAll { it.productId == productId }
+        currentCart.removeAll { it.productId == productId && it.variantId == variantId }
         _cartItems.value = currentCart
     }
 
@@ -243,7 +255,9 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
             val productName: String,
             val unitPrice: Double,
             val cogs: Double = 0.0,
-            var quantity: Int
+            var quantity: Int,
+            val variantId: Long? = null,
+            val variantName: String? = null
     ) {
         val totalPrice: Double
             get() = unitPrice * quantity

@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import com.example.pos.PosApplication
 import com.example.pos.R
 import com.example.pos.data.entity.Product
+import com.example.pos.data.entity.ProductVariant
 import com.example.pos.databinding.DialogEditProductBinding
 import com.example.pos.utils.ImageUtils
 import io.github.jan.supabase.gotrue.auth
@@ -28,6 +29,7 @@ class ProductEditDialogFragment : DialogFragment() {
     private var selectedCategoryId: Long = -1
     private var selectedImageUri: Uri? = null
     private var currentImagePath: String? = null
+    private val variants = mutableListOf<ProductVariant>()
 
     private val pickImageLauncher =
             registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
@@ -63,6 +65,7 @@ class ProductEditDialogFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupUI()
         loadCategories()
+        setupVariantUI()
     }
 
     private fun setupUI() {
@@ -72,6 +75,8 @@ class ProductEditDialogFragment : DialogFragment() {
             binding.inputPrice.setText(it.price.toString())
             binding.inputCogs.setText(it.cogs.toString())
             binding.inputStock.setText(it.stock?.toString() ?: "")
+            binding.inputSku.setText(it.sku)
+            binding.inputDiscountPrice.setText(it.discountPrice?.toString() ?: "")
             selectedCategoryId = it.categoryId
             currentImagePath = it.imagePath
             
@@ -93,15 +98,40 @@ class ProductEditDialogFragment : DialogFragment() {
             val priceStr = binding.inputPrice.text.toString()
             val cogsStr = binding.inputCogs.text.toString()
             val stockStr = binding.inputStock.text.toString()
+            val sku = binding.inputSku.text.toString()
+            val discountPriceStr = binding.inputDiscountPrice.text.toString()
 
-            if (name.isBlank() || priceStr.isBlank() || selectedCategoryId == -1L) {
-                // Should show errors
+            var hasError = false
+            if (name.isBlank()) {
+                binding.layoutName.error = "Name is required"
+                hasError = true
+            } else {
+                binding.layoutName.error = null
+            }
+
+            if (priceStr.isBlank()) {
+                binding.layoutPrice.error = "Price is required"
+                hasError = true
+            } else {
+                binding.layoutPrice.error = null
+            }
+
+            if (selectedCategoryId == -1L) {
+                binding.layoutCategory.error = "Category is required"
+                hasError = true
+            } else {
+                binding.layoutCategory.error = null
+            }
+
+            if (hasError) {
+                com.google.android.material.snackbar.Snackbar.make(binding.root, "Please fill all required fields", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             val price = priceStr.toDoubleOrNull() ?: 0.0
             val cogs = cogsStr.toDoubleOrNull() ?: 0.0
             val stock = stockStr.toIntOrNull()
+            val discountPrice = discountPriceStr.toDoubleOrNull()
 
             // Save image if selected
             selectedImageUri?.let {
@@ -110,7 +140,7 @@ class ProductEditDialogFragment : DialogFragment() {
             }
 
             if (product == null) {
-                viewModel.insert(selectedCategoryId, name, price, cogs, stock, currentImagePath)
+                viewModel.insert(selectedCategoryId, name, price, cogs, stock, currentImagePath, sku, discountPrice, variants)
             } else {
                 viewModel.update(
                         product!!,
@@ -119,10 +149,78 @@ class ProductEditDialogFragment : DialogFragment() {
                         price,
                         cogs,
                         stock,
-                        currentImagePath
+                        currentImagePath,
+                        sku,
+                        discountPrice
                 )
+                viewModel.saveVariants(product!!.id, variants)
             }
             dismiss()
+        }
+    }
+
+    private fun setupVariantUI() {
+        product?.let {
+            viewModel.getVariantsByProduct(it.id).observe(viewLifecycleOwner) { existingVariants: List<ProductVariant> ->
+                variants.clear()
+                variants.addAll(existingVariants)
+                refreshVariantContainer()
+            }
+        }
+
+        binding.btnAddVariant.setOnClickListener {
+            showAddVariantDialog()
+        }
+    }
+
+    private fun showAddVariantDialog() {
+        val dialogBinding = com.example.pos.databinding.ItemVariantInputBinding.inflate(layoutInflater)
+        val dialog = android.app.AlertDialog.Builder(requireContext())
+            .setTitle("Add Variant")
+            .setView(dialogBinding.root)
+            .create()
+
+        // Reuse the layout for input by adding EditTexts dynamically or modifying the layout.
+        // To keep it simple, I'll use a prompt.
+        val nameInput = android.widget.EditText(requireContext()).apply { hint = "Variant Name (e.g. XL, Red)" }
+        val priceInput = android.widget.EditText(requireContext()).apply { 
+            hint = "Price"
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
+        }
+        
+        val layout = android.widget.LinearLayout(requireContext()).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            setPadding(40, 20, 40, 20)
+            addView(nameInput)
+            addView(priceInput)
+        }
+
+        android.app.AlertDialog.Builder(requireContext())
+            .setTitle("Add Variant")
+            .setView(layout)
+            .setPositiveButton("Add") { _, _ ->
+                val name = nameInput.text.toString()
+                val price = priceInput.text.toString().toDoubleOrNull() ?: 0.0
+                if (name.isNotBlank()) {
+                    variants.add(ProductVariant(name = name, price = price, productId = product?.id ?: 0, userId = ""))
+                    refreshVariantContainer()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun refreshVariantContainer() {
+        binding.variantContainer.removeAllViews()
+        variants.forEach { variant ->
+            val variantBinding = com.example.pos.databinding.ItemVariantInputBinding.inflate(layoutInflater, binding.variantContainer, false)
+            variantBinding.variantName.text = variant.name
+            variantBinding.variantDetails.text = "Price: ${com.example.pos.utils.CurrencyFormatter.format(variant.price)}"
+            variantBinding.btnRemoveVariant.setOnClickListener {
+                variants.remove(variant)
+                refreshVariantContainer()
+            }
+            binding.variantContainer.addView(variantBinding.root)
         }
     }
 

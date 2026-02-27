@@ -22,8 +22,9 @@ import kotlinx.coroutines.launch
                         OrderItem::class,
                         Transaction::class,
                         Expense::class,
-                        Customer::class],
-        version = 7,
+                        Customer::class,
+                        ProductVariant::class],
+        version = 8,
         exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -35,6 +36,7 @@ abstract class AppDatabase : RoomDatabase() {
         abstract fun transactionDao(): TransactionDao
         abstract fun expenseDao(): ExpenseDao
         abstract fun customerDao(): CustomerDao
+        abstract fun productVariantDao(): ProductVariantDao
  
         companion object {
                 @Volatile private var INSTANCE: AppDatabase? = null
@@ -55,6 +57,31 @@ abstract class AppDatabase : RoomDatabase() {
                         }
                 }
 
+                val MIGRATION_7_8 = object : Migration(7, 8) {
+                        override fun migrate(db: SupportSQLiteDatabase) {
+                                // Add sku and discountPrice to products
+                                db.execSQL("ALTER TABLE products ADD COLUMN sku TEXT")
+                                db.execSQL("ALTER TABLE products ADD COLUMN discountPrice REAL")
+                                
+                                // Create product_variants table
+                                db.execSQL("""
+                                    CREATE TABLE IF NOT EXISTS `product_variants` (
+                                        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                                        `productId` INTEGER NOT NULL, 
+                                        `name` TEXT NOT NULL, 
+                                        `price` REAL NOT NULL, 
+                                        `stock` INTEGER, 
+                                        `sku` TEXT, 
+                                        `user_id` TEXT NOT NULL DEFAULT '', 
+                                        FOREIGN KEY(`productId`) REFERENCES `products`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE 
+                                    )
+                                """.trimIndent())
+                                
+                                // Create index for productId in product_variants
+                                db.execSQL("CREATE INDEX IF NOT EXISTS `index_product_variants_productId` ON `product_variants` (`productId`)")
+                        }
+                }
+
                 fun getDatabase(context: Context): AppDatabase {
                         return INSTANCE
                                 ?: synchronized(this) {
@@ -64,7 +91,7 @@ abstract class AppDatabase : RoomDatabase() {
                                                                 AppDatabase::class.java,
                                                                 "pos_database"
                                                         )
-                                                        .addMigrations(MIGRATION_6_7)
+                                                        .addMigrations(MIGRATION_6_7, MIGRATION_7_8)
                                                         .fallbackToDestructiveMigration()
                                                         .addCallback(DatabaseCallback())
                                                         .build()
